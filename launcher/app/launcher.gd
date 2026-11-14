@@ -4,7 +4,7 @@
 # Configurações em user://launcher.cfg; a versão instalada do jogo fica em <pasta>/version.txt.
 extends Control
 
-const LAUNCHER_VERSION := "1.0.0"
+const LAUNCHER_VERSION := "1.0.1"
 const REPO := "dieguesmosken/df-horda"
 const API := "https://api.github.com/repos/%s/releases?per_page=30" % REPO
 const RELEASES := "https://github.com/%s/releases" % REPO
@@ -23,6 +23,9 @@ var auto_update := true
 var installed := ""
 var latest := ""
 var asset_url := ""
+var asset_name := ""
+var launcher_name := ""
+var release_body := ""
 var asset_size := 0
 var notes := ""
 var channel := "stable"
@@ -319,9 +322,10 @@ func _load_cfg() -> void:
 	_refresh_version()
 
 
-func _save_cfg(save_auto := false) -> void:
+func _save_cfg(save_auto := false, save_channel := false) -> void:
 	cfg.set_value("launcher", "install_dir", install_dir)
-	cfg.set_value("launcher", "channel", channel)
+	if save_channel or cfg.has_section_key("launcher", "channel"):
+		cfg.set_value("launcher", "channel", channel)
 	cfg.set_value("launcher", "launcher_auto", launcher_auto)
 	if save_auto or cfg.has_section_key("launcher", "auto_update"):
 		cfg.set_value("launcher", "auto_update", auto_update)
@@ -338,7 +342,7 @@ func _use_system_proxy() -> void:
 	p = p.replace("http://", "").replace("https://", "").trim_suffix("/")
 	var host := p.get_slice(":", 0)
 	var port := int(p.get_slice(":", 1)) if p.contains(":") else 8080
-	for h in [http_api, http_dl]:
+	for h in [http_api, http_dl, http_self]:
 		h.set_https_proxy(host, port)
 		h.set_http_proxy(host, port)
 
@@ -440,7 +444,7 @@ func _ask_channel() -> void:
 
 func _set_channel(value: String, recheck := true) -> void:
 	channel = value
-	_save_cfg(true)
+	_save_cfg(true, true)
 	_refresh_badge()
 	_close_dialog()
 	if recheck:
@@ -586,7 +590,8 @@ func _on_api(result: int, code: int, _headers: PackedStringArray, body: PackedBy
 		return
 
 	latest = str(release.get("tag_name", ""))
-	notes = str(release.get("body", "")).split("\n---")[0].strip_edges().left(420)
+	release_body = str(release.get("body", ""))
+	notes = release_body.split("\n---")[0].split("<!--")[0].strip_edges().left(420)
 	asset_url = ""
 	launcher_url = ""
 	launcher_remote = ""
@@ -595,10 +600,12 @@ func _on_api(result: int, code: int, _headers: PackedStringArray, body: PackedBy
 		var n := str(a.get("name", ""))
 		if n.begins_with("DeadFrequencyHorda-") and n.contains(platform) and n.ends_with(".zip"):
 			asset_url = str(a.get("browser_download_url", ""))
+			asset_name = n
 			asset_size = int(a.get("size", 0))
 		# DeadFrequencyHordaLauncher-1.0.0-windows.exe / ...-linux.x86_64
 		elif n.begins_with("DeadFrequencyHordaLauncher-") and n.contains("-" + platform):
 			launcher_url = str(a.get("browser_download_url", ""))
+			launcher_name = n
 			launcher_remote = n.trim_prefix("DeadFrequencyHordaLauncher-").get_slice("-", 0)
 	if asset_url == "":
 		_offline("O release %s não tem o arquivo para %s." % [latest, platform])
@@ -698,6 +705,11 @@ func _on_download(result: int, code: int, headers: PackedStringArray, _b: Packed
 		_set_status("O download falhou (%d / %d). Tente de novo pela engrenagem." % [result, code], RED)
 		_refresh_version()
 		return
+	if not _hash_ok(_zip_path(), asset_name):
+		DirAccess.remove_absolute(_zip_path())
+		_set_status("O arquivo baixado não confere com o checksum do release. Tente de novo.", RED)
+		_refresh_version()
+		return
 	zip = ZIPReader.new()
 	if zip.open(_zip_path()) != OK:
 		_set_status("O arquivo baixado está corrompido. Tente de novo.", RED)
@@ -735,6 +747,13 @@ func _install_step() -> void:
 	bar.value = 100.0 * zip_index / zip_files.size()
 	_set_status("Instalando %s  ·  %d/%d" % [latest, zip_index, zip_files.size()])
 	var rel := name.trim_prefix(zip_root)
+	if not _safe_rel(rel):
+		installing = false
+		zip.close()
+		DirAccess.remove_absolute(_zip_path())
+		_set_status("O pacote tem um caminho inválido (%s). Instalação cancelada." % rel, RED)
+		_refresh_version()
+		return
 	if rel == "" or rel.ends_with("/"):
 		DirAccess.make_dir_recursive_absolute(install_dir.path_join(rel))
 		return
@@ -816,6 +835,10 @@ func _on_self_download(result: int, code: int, headers: PackedStringArray, _b: P
 		DirAccess.remove_absolute(_self_new_path())
 		_self_failed("O download do launcher falhou (%d / %d)." % [result, code])
 		return
+	if not _hash_ok(_self_new_path(), launcher_name):
+		DirAccess.remove_absolute(_self_new_path())
+		_self_failed("O launcher novo não confere com o checksum do release.")
+		return
 	_swap_launcher()
 
 
@@ -859,3 +882,33 @@ func _check_after_self_failure() -> void:
 		else:
 			_ask_download(true)
 	_refresh_version()
+
+
+# ================================================================ segurança
+
+## Checksum esperado do arquivo, escrito pelo CI nas notas do release como <!-- sha256:NOME:HASH -->.
+func _expected_hash(file_name: String) -> String:
+	var re := RegEx.new()
+	re.compile("sha256:([^:\\s]+):([0-9a-fA-F]{64})")
+	for m in re.search_all(release_body):
+		if m.get_string(1) == file_name:
+			return m.get_string(2).to_lower()
+	return ""
+
+
+## Releases antigos não têm checksum nas notas: nesses, segue sem conferir.
+func _hash_ok(path: String, file_name: String) -> bool:
+	var expected := _expected_hash(file_name)
+	if expected == "":
+		return true
+	return FileAccess.get_sha256(path) == expected
+
+
+## Recusa caminhos absolutos ou com ".." dentro do zip (Zip Slip).
+func _safe_rel(rel: String) -> bool:
+	if rel.begins_with("/") or rel.begins_with("\\") or rel.contains(":"):
+		return false
+	for part in rel.replace("\\", "/").split("/"):
+		if part == "..":
+			return false
+	return true

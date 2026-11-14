@@ -10,6 +10,7 @@ Para lançar uma versão nova: mude `Current` em `Scripts/GameVersion.cs`, escre
 - O launcher também se atualiza sozinho (dá para desligar na engrenagem).
 - Dois canais de versão: **Estável** (releases) e **Beta** (builds novos do branch `beta`, com mais chance de bug). Dá para trocar a qualquer hora.
 - Fonte trocada para a Silkscreen (nítida no tamanho do jogo) e menu sem o painel escuro, como antes: dá para ver o fundo de novo. Textos longos encurtados.
+- Launcher 1.0.1: confere o checksum do jogo e do launcher baixados, recusa caminhos suspeitos dentro do zip, usa o proxy também na atualização do launcher e pergunta o canal na primeira vez. Checksums do release agora têm os nomes certos.
 - Fluxo de trabalho novo: mudanças entram primeiro no branch `beta` e só chegam na `main` por pull request.
 
 ## v0.3.0 — Oficina da 96.6  (14/11/2026)

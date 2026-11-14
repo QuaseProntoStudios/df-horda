@@ -60,7 +60,8 @@ jobs:
           cp LICENSE README.md build/linux/
           (cd build/windows && zip -qr "../../DeadFrequencyHorda-v${VER}-windows.zip" .)
           (cd build/linux && zip -qr "../../DeadFrequencyHorda-v${VER}-linux.zip" .)
-          sha256sum DeadFrequencyHorda-v${VER}-windows.zip DeadFrequencyHorda-v${VER}-linux.zip launcher-out/* > SHA256SUMS.txt
+          sha256sum DeadFrequencyHorda-v${VER}-windows.zip DeadFrequencyHorda-v${VER}-linux.zip > SHA256SUMS.txt
+          (cd launcher-out && sha256sum *) >> SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Publicar release
@@ -68,6 +69,8 @@ jobs:
         run: |
           VER=${{ steps.ver.outputs.version }}
           python3 Tools/changelog.py notes "$VER" > notes.md
+          # Checksums para o launcher conferir (lidos das notas do release).
+          awk '{printf "<!-- sha256:%s:%s -->\n", $2, $1}' SHA256SUMS.txt >> notes.md
           gh release create "v$VER" DeadFrequencyHorda-v${VER}-windows.zip DeadFrequencyHorda-v${VER}-linux.zip launcher-out/* SHA256SUMS.txt \
             --title "v$VER — ${{ steps.ver.outputs.title }}" --notes-file notes.md --target "$GITHUB_SHA"
         env:

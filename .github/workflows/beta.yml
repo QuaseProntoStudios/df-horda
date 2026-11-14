@@ -68,7 +68,8 @@ jobs:
           cp LICENSE README.md build/linux/
           (cd build/windows && zip -qr "../../DeadFrequencyHorda-${TAG}-windows.zip" .)
           (cd build/linux && zip -qr "../../DeadFrequencyHorda-${TAG}-linux.zip" .)
-          sha256sum DeadFrequencyHorda-${TAG}-windows.zip DeadFrequencyHorda-${TAG}-linux.zip launcher-out/* > SHA256SUMS.txt
+          sha256sum DeadFrequencyHorda-${TAG}-windows.zip DeadFrequencyHorda-${TAG}-linux.zip > SHA256SUMS.txt
+          (cd launcher-out && sha256sum *) >> SHA256SUMS.txt
 
       - name: Publicar pré-lançamento
         run: |
@@ -79,6 +80,8 @@ jobs:
             echo "Últimas mudanças:"
             git log -8 --pretty='- %s' --no-merges
           } > notes.md
+          # Checksums para o launcher conferir (lidos das notas do release).
+          awk '{printf "<!-- sha256:%s:%s -->\n", $2, $1}' SHA256SUMS.txt >> notes.md
           gh release create "$TAG" DeadFrequencyHorda-${TAG}-windows.zip DeadFrequencyHorda-${TAG}-linux.zip launcher-out/* SHA256SUMS.txt \
             --prerelease --title "$TAG (beta)" --notes-file notes.md --target "$GITHUB_SHA"
         env:
