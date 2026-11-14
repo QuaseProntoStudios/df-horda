@@ -9,6 +9,7 @@ Para lançar uma versão nova: mude `Current` em `Scripts/GameVersion.cs`, escre
 - **Launcher** próprio (Windows e Linux): instala o jogo, atualiza sozinho e abre com um clique. Vem junto de cada release.
 - O launcher também se atualiza sozinho (dá para desligar na engrenagem).
 - Dois canais de versão: **Estável** (releases) e **Beta** (builds novos do branch `beta`, com mais chance de bug). Dá para trocar a qualquer hora.
+- Fonte trocada para a Silkscreen (nítida no tamanho do jogo) e menu sem o painel escuro, como antes: dá para ver o fundo de novo. Textos longos encurtados.
 - Fluxo de trabalho novo: mudanças entram primeiro no branch `beta` e só chegam na `main` por pull request.
 
 ## v0.3.0 — Oficina da 96.6  (14/11/2026)

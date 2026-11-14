@@ -5,8 +5,8 @@ namespace DeadFrequencyHorda;
 /// <summary>Lista de conquistas com rolagem (setas, roda do mouse).</summary>
 public partial class AchievementsScreen : PanelScreen
 {
-    private const float ListTop = 34f;
-    private const float RowH = 25f;
+    private const float ListTop = 36f;
+    private const float RowH = 24f;
     private const int Visible_ = 5;
     private const float ListX = 28f;
     private const float ListW = 264f;
@@ -24,15 +24,15 @@ public partial class AchievementsScreen : PanelScreen
     {
         if (!Visible) return;
 
-        Backdrop(new Rect2(ListX - 10f, 5f, ListW + 20f, 170f));
+        Backdrop(new Rect2(ListX - 10f, 5f, ListW + 20f, 172f));
 
         int total = Achievements.All.Length;
         int done = Achievements.UnlockedCount;
-        Text(ListX, 9f, "CONQUISTAS", UiStyle.Green, 12, bold: true);
-        Text(ListX, 10f, $"{done}/{total}", Gold, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
+        Text(ListX, 9f, "CONQUISTAS", UiStyle.Green, 16, bold: true);
+        Text(ListX, 13f, $"{done}/{total}", Gold, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
 
-        DrawRect(new Rect2(ListX, 25f, ListW, 3f), UiStyle.Dark);
-        DrawRect(new Rect2(ListX, 25f, ListW * done / total, 3f), Gold);
+        DrawRect(new Rect2(ListX, 28f, ListW, 3f), UiStyle.Dark);
+        DrawRect(new Rect2(ListX, 28f, ListW * done / total, 3f), Gold);
 
         for (int i = 0; i < Visible_; i++)
         {
@@ -51,8 +51,8 @@ public partial class AchievementsScreen : PanelScreen
             DrawRect(new Rect2(ListX + ListW + 3f, thumbY, 2f, thumbH), UiStyle.Green);
         }
 
-        Text(ListX, 162f, "Setas ou roda: rolar", UiStyle.Hint);
-        Text(ListX, 162f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
+        Text(ListX, 168f, "Setas ou roda: rolar", UiStyle.Hint);
+        Text(ListX, 168f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
     }
 
     private void DrawRow(AchievementDef def, bool selected, float top)
@@ -66,7 +66,7 @@ public partial class AchievementsScreen : PanelScreen
         var seal = new Rect2(ListX + 4f, top + 4f, 15f, 15f);
         DrawRect(seal, unlocked ? new Color(0.45f, 0.32f, 0.05f) : new Color(0.08f, 0.1f, 0.09f));
         DrawRect(seal, unlocked ? Gold : UiStyle.Disabled, false, 1f);
-        Text(seal.Position.X, seal.Position.Y + 1f, unlocked ? "★" : "?", unlocked ? Gold : UiStyle.Disabled, UiStyle.FontSize,
+        Text(seal.Position.X, seal.Position.Y + 1f, unlocked ? "*" : "?", unlocked ? Gold : UiStyle.Disabled, UiStyle.FontSize,
             HorizontalAlignment.Center, seal.Size.X);
 
         bool hide = def.Secret && !unlocked;
@@ -96,7 +96,7 @@ public partial class AchievementsScreen : PanelScreen
         {
             if (button.ButtonIndex == MouseButton.WheelDown) return Move(1);
             if (button.ButtonIndex == MouseButton.WheelUp) return Move(-1);
-            if (button.ButtonIndex == MouseButton.Left && button.Position.Y > 158f)
+            if (button.ButtonIndex == MouseButton.Left && button.Position.Y > 164f)
             {
                 Close();
                 return true;

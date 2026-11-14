@@ -57,8 +57,8 @@ public static class MetaProgress
         new MetaDef { Id = Antena, Name = "Antena Melhor", MaxLevel = 8, BaseCost = 20, Growth = 1.35f, PerLevel = 0.05f, Percent = true, Text = "+{0}% de sinais (XP)" },
         new MetaDef { Id = Sorte, Name = "Amuleto da Rádio", MaxLevel = 8, BaseCost = 25, Growth = 1.4f, PerLevel = 0.04f, Percent = true, Text = "+{0}% de chance de raridade melhor" },
         new MetaDef { Id = Mecanico, Name = "Mecânico de Plantão", MaxLevel = 5, BaseCost = 20, Growth = 1.4f, PerLevel = 0.15f, Percent = true, Text = "+{0}% de chance de kit de reparo" },
-        new MetaDef { Id = Arranque, Name = "Largada Lançada", MaxLevel = 3, BaseCost = 60, Growth = 2f, PerLevel = 1f, Text = "Começa {0} nível(is) acima, com escolha de upgrade" },
-        new MetaDef { Id = Revive, Name = "Segunda Chance", MaxLevel = 2, BaseCost = 100, Growth = 2.5f, PerLevel = 1f, Text = "Revive {0}x por partida com 40% de vida" },
+        new MetaDef { Id = Arranque, Name = "Largada Lançada", MaxLevel = 3, BaseCost = 60, Growth = 2f, PerLevel = 1f, Text = "Começa {0} nível(is) acima" },
+        new MetaDef { Id = Revive, Name = "Segunda Chance", MaxLevel = 2, BaseCost = 100, Growth = 2.5f, PerLevel = 1f, Text = "Revive {0}x com 40% de vida" },
     };
 
     private static readonly Dictionary<string, int> _levels = new();

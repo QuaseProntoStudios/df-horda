@@ -2,10 +2,10 @@ using Godot;
 
 namespace DeadFrequencyHorda;
 
-/// <summary>Fonte pixel art do jogo (Pixelify Sans, OFL), sem suavização para os pixels ficarem nítidos.</summary>
+/// <summary>Fonte pixel art do jogo (Silkscreen, OFL; use tamanhos 8, 16 ou 24), sem suavização para os pixels ficarem nítidos.</summary>
 public static class Fonts
 {
-    public const int BodySize = 10;
+    public const int BodySize = 8;
 
     public static Font Regular { get; private set; }
     public static Font Bold { get; private set; }
@@ -16,8 +16,8 @@ public static class Fonts
         if (_ready) return;
         _ready = true;
 
-        Regular = Load("res://Fonts/PixelifySans-Medium.ttf") ?? ThemeDB.FallbackFont;
-        Bold = Load("res://Fonts/PixelifySans-Bold.ttf") ?? Regular;
+        Regular = Load("res://Fonts/Silkscreen-Regular.ttf") ?? ThemeDB.FallbackFont;
+        Bold = Load("res://Fonts/Silkscreen-Bold.ttf") ?? Regular;
         ThemeDB.FallbackFont = Regular;
         ThemeDB.FallbackFontSize = BodySize;
     }

@@ -8,8 +8,8 @@ public partial class AchievementToast : CanvasLayer
 {
     private const float Shown = 4f;
     private const float SlideTime = 0.35f;
-    private const float BoxW = 176f;
-    private const float BoxH = 38f;
+    private const float BoxW = 250f;
+    private const float BoxH = 44f;
 
     private readonly Queue<AchievementDef> _queue = new();
     private Control _box;
@@ -44,13 +44,13 @@ public partial class AchievementToast : CanvasLayer
 
         _name = UiStyle.MakeTitle("", Colors.White, UiStyle.FontSize);
         _name.Position = new Vector2(6f, 13f);
-        _name.Size = new Vector2(BoxW - 12f, 12f);
+        _name.Size = new Vector2(BoxW - 12f, 10f);
         _box.AddChild(_name);
 
         _text = UiStyle.MakeLabel("", UiStyle.Hint);
-        _text.Position = new Vector2(6f, 24f);
-        _text.Size = new Vector2(BoxW - 12f, 12f);
-        _text.ClipText = true;
+        _text.Position = new Vector2(6f, 25f);
+        _text.Size = new Vector2(BoxW - 12f, 18f);
+        _text.AutowrapMode = TextServer.AutowrapMode.WordSmart;
         _box.AddChild(_text);
 
         _sound = new AudioStreamPlayer { Bus = GameSettings.BusUi, VolumeDb = -2f, Stream = Assets.Stream("UI/ui_start.wav") };
@@ -76,7 +76,8 @@ public partial class AchievementToast : CanvasLayer
             if (_queue.Count == 0) return;
             AchievementDef def = _queue.Dequeue();
             _name.Text = def.Name;
-            _text.Text = def.Reward > 0 ? $"{def.Description}  +{def.Reward} fichas" : def.Description;
+            _text.Text = def.Description;
+            _kicker.Text = def.Reward > 0 ? $"CONQUISTA DESBLOQUEADA  +{def.Reward} FICHAS" : "CONQUISTA DESBLOQUEADA";
             _age = 0f;
             _box.Visible = true;
             _sound.Play();

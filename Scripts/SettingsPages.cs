@@ -14,7 +14,7 @@ public static class SettingsPages
         }
 
         var page = new MenuPanel.Page { Id = "settings", OnBack = GoBack, DimAlpha = dimAlpha };
-        page.Title.Add(("CONFIGURAÇÕES", 12, UiStyle.Green));
+        page.Title.Add(("CONFIGURAÇÕES", 16, UiStyle.Green));
 
         page.Items.Add(Slider("Volume geral", () => GameSettings.Master, v => GameSettings.Master = v,
             GameSettings.BusMaster, "UI/ui_click.wav", "Controla todos os sons de uma vez."));

@@ -121,9 +121,9 @@ public partial class MainMenu : Node2D
         layer.AddChild(_menu);
 
         var main = new MenuPanel.Page { Id = "main", DimAlpha = 0.55f };
-        main.Title.Add(("DEAD FREQUENCY", 14, UiStyle.Green));
-        main.Title.Add(("H O R D A", 20, new Color(0.7f, 1f, 0.75f)));
-        main.Title.Add(("96.6 FM", 10, UiStyle.Hint));
+        main.Title.Add(("DEAD FREQUENCY", 16, UiStyle.Green));
+        main.Title.Add(("H O R D A", 24, new Color(0.7f, 1f, 0.75f)));
+        main.Title.Add(("96.6 FM", 8, UiStyle.Hint));
         main.Items.Add(MenuPanel.Button("Jogar", () => _menu.Open("difficulty"), "Começa uma partida nova."));
         main.Items.Add(new MenuPanel.Item
         {
@@ -159,7 +159,7 @@ public partial class MainMenu : Node2D
         AchievementToast.Create(this);
 
         var footer = UiStyle.MakeLabel($"v{GameVersion.Full}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
-        footer.Position = new Vector2(4f, 168f);
+        footer.Position = new Vector2(4f, 3f);
         layer.AddChild(footer);
 
         // Se existe partida salva, o cursor já cai em "Continuar".

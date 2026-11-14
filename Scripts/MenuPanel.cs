@@ -41,7 +41,7 @@ public partial class MenuPanel : Control
         public int StartIndex = -1;
     }
 
-    private const float RowH = 13f;
+    private const float RowH = 12f;
     private const float RowGap = 1f;
     private const float RowX = 36f;
     private const float RowW = 248f;
@@ -113,12 +113,6 @@ public partial class MenuPanel : Control
 
         DrawRect(new Rect2(Vector2.Zero, Size), new Color(0f, 0f, 0f, _page.DimAlpha));
 
-        // Painel escuro atrás de tudo: o texto não se perde no fundo do jogo.
-        float bottom = ItemsTop() + _page.Items.Count * (RowH + RowGap) + 6f;
-        var panel = new Rect2(RowX - 12f, 5f, RowW + 24f, bottom - 5f);
-        DrawRect(panel, new Color(0.01f, 0.04f, 0.02f, 0.94f));
-        DrawRect(panel, UiStyle.GreenDim, false, 1f);
-
         float y = 11f;
         foreach ((string text, int size, Color color) in _page.Title)
         {
@@ -133,12 +127,7 @@ public partial class MenuPanel : Control
         if (_sel >= 0 && _sel < _page.Items.Count)
         {
             string hint = _page.Items[_sel].Hint?.Invoke();
-            if (!string.IsNullOrEmpty(hint))
-            {
-                float width = _font.GetStringSize(hint, HorizontalAlignment.Left, -1f, UiStyle.FontSize).X + 12f;
-                DrawRect(new Rect2((Size.X - width) / 2f, 166f, width, 13f), new Color(0f, 0f, 0f, 0.85f));
-                DrawCentered(hint, 167f, UiStyle.FontSize, UiStyle.Hint);
-            }
+            if (!string.IsNullOrEmpty(hint)) DrawCentered(hint, 168f, UiStyle.FontSize, UiStyle.Hint);
         }
     }
 

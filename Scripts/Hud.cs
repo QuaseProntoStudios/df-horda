@@ -92,7 +92,7 @@ public partial class Hud : CanvasLayer
         };
         AddChild(_bannerDim);
 
-        _bannerTitle = UiStyle.MakeTitle("", UiStyle.Green, 20);
+        _bannerTitle = UiStyle.MakeTitle("", UiStyle.Green, 24);
         _bannerTitle.Position = new Vector2(0f, 50f);
         _bannerTitle.Size = new Vector2(ScreenWidth, 26f);
         _bannerTitle.HorizontalAlignment = HorizontalAlignment.Center;
