@@ -39,10 +39,12 @@ public partial class MainMenu : Node2D
     }
 
     private Label _footer;
+    private Label _studio;
 
     public override void _Process(double delta)
     {
         if (_footer != null) _footer.Visible = _menu.Visible;
+        if (_studio != null) _studio.Visible = _menu.Visible;
         float dt = (float)delta;
         _time += dt;
 
@@ -164,6 +166,13 @@ public partial class MainMenu : Node2D
         _footer = UiStyle.MakeLabel($"v{GameVersion.Full}", Colors.White);
         _footer.Position = new Vector2(3f, 167f);
         layer.AddChild(_footer);
+
+        // Assinatura do estúdio no canto oposto ao número da versão.
+        _studio = UiStyle.MakeLabel("Quase Pronto Studios", Colors.White);
+        _studio.HorizontalAlignment = HorizontalAlignment.Right;
+        _studio.Position = new Vector2(117f, 167f);
+        _studio.Size = new Vector2(200f, 12f);
+        layer.AddChild(_studio);
 
         // Se existe partida salva, o cursor já cai em "Continuar".
         if (RunSave.Exists) main.StartIndex = 1;
