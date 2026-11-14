@@ -17,6 +17,14 @@ A van contra a horda, ao som da rádio 96.6: sobreviva 15 minutos, junte sinais,
 
 Atropelar em velocidade machuca os inimigos e protege a van dos fracos. **Parado ou devagar, cada inimigo encostado morde junto**: a van não aguenta ficar parada.
 
+## Launcher e canais
+
+Baixe o `DeadFrequencyHordaLauncher` (Windows `.exe` ou Linux `.x86_64`) na [página de releases](https://github.com/dieguesmosken/df-horda/releases). Ele instala o jogo, atualiza sozinho e atualiza a si mesmo. Na engrenagem dá para trocar a pasta, ligar/desligar as atualizações automáticas e escolher o canal: **Estável** (releases) ou **Beta** (builds do branch `beta`, com mais chance de bug). O código está em `launcher/app/` (GDScript, Godot padrão); ao mudar `launcher.gd`, suba `LAUNCHER_VERSION` no script e `config/version` no `project.godot`.
+
+## Fluxo de branches
+
+`beta` é onde tudo entra primeiro (cada push que muda o jogo publica um pré-lançamento `vX.Y.Z-beta.N`). A `main` é protegida: só recebe pull request vindo do `beta`, com o CI passando, e publica o release estável quando a versão em `Scripts/GameVersion.cs` muda.
+
 ## Menus e configurações
 
 - Menu inicial: **Jogar** (escolhe a dificuldade), **Continuar** (retoma a partida salva), **Oficina** (upgrades permanentes com fichas), **Conquistas**, **Configurações**, **Sair**.

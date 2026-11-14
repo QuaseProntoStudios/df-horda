@@ -4,6 +4,13 @@ Histórico de todas as versões do Dead Frequency: Horda. O site mostra a mesma 
 
 Para lançar uma versão nova: mude `Current` em `Scripts/GameVersion.cs`, escreva a entrada no topo deste arquivo (`## vX.Y.Z — Título  (DD/MM/AAAA)`) e dê push na `main`.
 
+## v0.3.1 — Launcher  (14/11/2026)
+
+- **Launcher** próprio (Windows e Linux): instala o jogo, atualiza sozinho e abre com um clique. Vem junto de cada release.
+- O launcher também se atualiza sozinho (dá para desligar na engrenagem).
+- Dois canais de versão: **Estável** (releases) e **Beta** (builds novos do branch `beta`, com mais chance de bug). Dá para trocar a qualquer hora.
+- Fluxo de trabalho novo: mudanças entram primeiro no branch `beta` e só chegam na `main` por pull request.
+
 ## v0.3.0 — Oficina da 96.6  (14/11/2026)
 
 - Fonte pixel art nova (Pixelify Sans, licença OFL) em todo o jogo, com contorno nos textos e painel escuro atrás dos menus para ler melhor.

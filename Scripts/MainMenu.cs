@@ -158,7 +158,7 @@ public partial class MainMenu : Node2D
         layer.AddChild(_workshop);
         AchievementToast.Create(this);
 
-        var footer = UiStyle.MakeLabel($"v{GameVersion.Current}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
+        var footer = UiStyle.MakeLabel($"v{GameVersion.Full}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
         footer.Position = new Vector2(4f, 168f);
         layer.AddChild(footer);
 
