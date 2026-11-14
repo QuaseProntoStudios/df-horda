@@ -83,3 +83,6 @@ h3{margin:.2rem 0 .4rem;font-size:1.05rem;color:#eafff1}
 
 .foot{text-align:center;padding:3rem 1rem 4rem;color:var(--dim);border-top:1px solid var(--line);margin-top:3rem}
 @media (max-width:600px){.nav{padding:.6rem .8rem}.parade{--px:3}.enemies article{--px:3}}
+
+.foot .studio{display:inline-block;margin-bottom:.6rem}
+.foot .studio img{image-rendering:pixelated;height:auto;max-width:100%}
