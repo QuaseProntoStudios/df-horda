@@ -1,3 +1,2 @@
-Pixelify Sans (https://github.com/eifetx/Pixelify-Sans), licença SIL Open Font License 1.1 (OFL.txt).
-Os arquivos aqui são instâncias estáticas da fonte variável original, nos pesos Medium (500) e Bold (700),
-geradas com fontTools (varLib.instancer). Nenhuma outra alteração.
+Silkscreen (https://fonts.google.com/specimen/Silkscreen), de Jason Kottke, licença SIL Open Font License 1.1 (OFL.txt).
+Fonte pixel feita para o tamanho 8: use sempre 8, 16 ou 24 para os pixels ficarem nítidos. Arquivos originais, sem alterações.

@@ -1,0 +1,88 @@
+# Publica um build BETA (pré-lançamento no GitHub) a cada push no branch beta que mude o jogo,
+# ou pelo botão "Run workflow". É o que o launcher baixa no canal Beta.
+# A tag fica vX.Y.Z-beta.N (N = número da execução).
+name: Beta
+
+on:
+  push:
+    branches: [beta]
+    paths:
+      - "Scripts/**"
+      - "Scenes/**"
+      - "Art/**"
+      - "Audio/**"
+      - "Fonts/**"
+      - "project.godot"
+      - "launcher/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: beta-release
+  cancel-in-progress: false
+
+jobs:
+  beta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versão do build
+        id: ver
+        run: |
+          python3 Tools/changelog.py check
+          VER=$(grep -oP 'Current = "\K[0-9.]+' Scripts/GameVersion.cs)
+          TAG="v${VER}-beta.${GITHUB_RUN_NUMBER}"
+          echo "version=${VER}-beta.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "base=$VER" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Build beta $TAG"
+
+      - name: Marcar a versão beta no jogo
+        run: sed -i 's/Suffix = ""/Suffix = "-beta.${{ github.run_number }}"/' Scripts/GameVersion.cs
+
+      - uses: ./.github/actions/setup-godot
+
+      - name: Importar assets e compilar o C#
+        run: |
+          "$GODOT" --headless --import --path . || true
+          dotnet build DeadFrequencyHorda.csproj -c ExportRelease
+
+      - name: Exportar Windows e Linux
+        run: |
+          set -e
+          mkdir -p build/windows build/linux
+          "$GODOT" --headless --path . --export-release "Windows Desktop" build/windows/DeadFrequencyHorda.exe
+          "$GODOT" --headless --path . --export-release "Linux" build/linux/DeadFrequencyHorda.x86_64
+          chmod +x build/linux/DeadFrequencyHorda.x86_64
+
+      - uses: ./.github/actions/build-launcher
+
+      - name: Empacotar
+        run: |
+          set -e
+          TAG=${{ steps.ver.outputs.tag }}
+          cp LICENSE README.md build/windows/
+          cp LICENSE README.md build/linux/
+          (cd build/windows && zip -qr "../../DeadFrequencyHorda-${TAG}-windows.zip" .)
+          (cd build/linux && zip -qr "../../DeadFrequencyHorda-${TAG}-linux.zip" .)
+          sha256sum DeadFrequencyHorda-${TAG}-windows.zip DeadFrequencyHorda-${TAG}-linux.zip > SHA256SUMS.txt
+          (cd launcher-out && sha256sum *) >> SHA256SUMS.txt
+
+      - name: Publicar pré-lançamento
+        run: |
+          TAG=${{ steps.ver.outputs.tag }}
+          {
+            echo "Build **beta** da v${{ steps.ver.outputs.base }}: pode ter bugs. Para a versão estável, use o canal Estável do launcher."
+            echo
+            echo "Últimas mudanças:"
+            git log -8 --pretty='- %s' --no-merges
+          } > notes.md
+          # Checksums para o launcher conferir (lidos das notas do release).
+          awk '{printf "<!-- sha256:%s:%s -->\n", $2, $1}' SHA256SUMS.txt >> notes.md
+          gh release create "$TAG" DeadFrequencyHorda-${TAG}-windows.zip DeadFrequencyHorda-${TAG}-linux.zip launcher-out/* SHA256SUMS.txt \
+            --prerelease --title "$TAG (beta)" --notes-file notes.md --target "$GITHUB_SHA"
+        env:
+          GH_TOKEN: ${{ github.token }}

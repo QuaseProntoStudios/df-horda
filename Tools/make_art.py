@@ -431,6 +431,237 @@ REPAIR = [
 ]
 from_rows(REPAIR, REPAIR_PALETTE).save(os.path.join(OUT, "repair.png"))
 
+# ------------------------------------------------------------------ Cenário: ladrilhos e objetos
+# tiles.png: ladrilhos 16x16 (8 colunas x 2 linhas). Linha 0: grama 0-3, mata 4-5, terra 6-7.
+# Linha 1: asfalto 0-2, cascalho 3-4. O Scripts/Scenery.cs escolhe o ladrilho pelo bioma.
+TILE = 16
+tiles = Image.new("RGBA", (TILE * 8, TILE * 2), T)
+
+
+def make_tile(index, base, specks, seed):
+    r = random.Random(seed)
+    t = Image.new("RGBA", (TILE, TILE), base + (255,))
+    for _ in range(26):
+        x, y = r.randrange(TILE), r.randrange(TILE)
+        c = r.choice(specks)
+        t.putpixel((x, y), c + (255,))
+    tiles.paste(t, ((index % 8) * TILE, (index // 8) * TILE))
+    return t
+
+
+def grass_tuft(t, x, y, color):
+    for ox, oy in ((0, 0), (-1, -1), (1, -1), (0, -2)):
+        if 0 <= x + ox < TILE and 0 <= y + oy < TILE:
+            t.putpixel((x + ox, y + oy), color + (255,))
+
+
+GRASS = (46, 68, 44)
+GRASS_S = [(40, 60, 38), (52, 78, 48), (58, 86, 52), (36, 54, 34)]
+for i in range(4):
+    t = make_tile(i, GRASS, GRASS_S, 100 + i)
+    if i % 2 == 0:
+        grass_tuft(t, 4 + i * 3, 9 + i, (66, 100, 60))
+        tiles.paste(t, (i * TILE, 0))
+FOREST = (30, 50, 36)
+FOREST_S = [(24, 42, 30), (36, 58, 42), (44, 60, 38), (22, 38, 28)]
+for i in range(2):
+    t = make_tile(4 + i, FOREST, FOREST_S, 200 + i)
+    for _ in range(3):  # folhas secas
+        t.putpixel((random.Random(210 + i + _).randrange(TILE), random.Random(220 + i + _).randrange(TILE)), (92, 70, 40, 255))
+    tiles.paste(t, ((4 + i) * TILE, 0))
+DIRT = (88, 70, 52)
+DIRT_S = [(78, 62, 46), (98, 80, 60), (70, 56, 42), (108, 90, 68)]
+for i in range(2):
+    make_tile(6 + i, DIRT, DIRT_S, 300 + i)
+ASPH = (46, 48, 56)
+ASPH_S = [(40, 42, 50), (54, 56, 64), (34, 36, 42)]
+for i in range(3):
+    make_tile(8 + i, ASPH, ASPH_S, 400 + i)
+GRAVEL = (74, 70, 64)
+GRAVEL_S = [(62, 58, 54), (88, 84, 76), (54, 50, 46), (100, 96, 88)]
+for i in range(2):
+    make_tile(11 + i, GRAVEL, GRAVEL_S, 500 + i)
+tiles.save(os.path.join(OUT, "tiles.png"))
+
+
+def sprite_canvas(w, h):
+    return Image.new("RGBA", (w, h), T), None
+
+
+def finish(image, name):
+    outline(image)
+    image.save(os.path.join(OUT, name + ".png"))
+    return image
+
+
+def ellipse(d, cx, cy, rx, ry, color):
+    d.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=color)
+
+
+# Pinheiro 18x30: copa em camadas e tronco curto.
+img = Image.new("RGBA", (18, 30), T)
+d = ImageDraw.Draw(img)
+box(d, 7, 24, 10, 28, (84, 56, 34, 255))
+box(d, 7, 24, 8, 28, (104, 72, 44, 255))
+for top, half, col in ((15, 8, (28, 78, 48, 255)), (9, 6, (34, 92, 56, 255)), (2, 4, (42, 108, 64, 255))):
+    for row in range(half + 1):
+        w = int(half * (row / half)) if half else 0
+        d.line([(9 - w, top + row + 6), (9 + w, top + row + 6)], fill=col)
+for x, y in ((6, 22), (11, 17), (8, 13), (10, 9)):
+    img.putpixel((x, y), (70, 150, 90, 255))
+finish(img, "tree_pine")
+
+# Árvore redonda 22x28.
+img = Image.new("RGBA", (22, 28), T)
+d = ImageDraw.Draw(img)
+box(d, 9, 18, 12, 26, (92, 62, 38, 255))
+box(d, 9, 18, 10, 26, (112, 80, 50, 255))
+ellipse(d, 11, 11, 10, 9, (44, 104, 52, 255))
+ellipse(d, 8, 8, 5, 4, (66, 134, 66, 255))
+ellipse(d, 14, 14, 6, 4, (34, 82, 44, 255))
+for x, y in ((6, 6), (9, 4), (14, 9), (7, 12)):
+    img.putpixel((x, y), (96, 170, 84, 255))
+finish(img, "tree_round")
+
+# Árvore seca 20x28.
+img = Image.new("RGBA", (20, 28), T)
+d = ImageDraw.Draw(img)
+box(d, 9, 12, 11, 26, (92, 80, 70, 255))
+d.line([(10, 14), (4, 6)], fill=(92, 80, 70, 255))
+d.line([(10, 11), (16, 4)], fill=(92, 80, 70, 255))
+d.line([(10, 17), (16, 12)], fill=(92, 80, 70, 255))
+d.line([(4, 6), (3, 3)], fill=(92, 80, 70, 255))
+d.line([(16, 4), (17, 2)], fill=(92, 80, 70, 255))
+d.line([(9, 8), (8, 3)], fill=(92, 80, 70, 255))
+box(d, 9, 12, 9, 26, (120, 108, 94, 255))
+finish(img, "tree_dead")
+
+# Arbusto 14x10.
+img = Image.new("RGBA", (14, 10), T)
+d = ImageDraw.Draw(img)
+ellipse(d, 7, 6, 6, 3, (40, 94, 50, 255))
+ellipse(d, 5, 4, 3, 3, (58, 124, 62, 255))
+ellipse(d, 9, 5, 3, 2, (48, 108, 54, 255))
+for x, y in ((4, 3), (8, 4)):
+    img.putpixel((x, y), (92, 168, 84, 255))
+finish(img, "bush")
+
+# Pedra 14x11 e pedra pequena 9x7.
+for name, w, h in (("rock", 14, 11), ("rock_small", 9, 7)):
+    img = Image.new("RGBA", (w, h), T)
+    d = ImageDraw.Draw(img)
+    d.polygon([(1, h - 2), (2, 3), (w // 2, 0), (w - 3, 2), (w - 1, h - 3), (w - 3, h - 1), (3, h - 1)], fill=(120, 122, 128, 255))
+    d.polygon([(2, 4), (w // 2, 1), (w - 4, 3), (w // 2, 5)], fill=(158, 160, 166, 255))
+    d.polygon([(w - 3, 4), (w - 1, h - 3), (w - 3, h - 1), (w // 2 + 1, h - 1)], fill=(88, 90, 98, 255))
+    finish(img, name)
+
+# Toco 12x10.
+img = Image.new("RGBA", (12, 10), T)
+d = ImageDraw.Draw(img)
+box(d, 1, 3, 10, 8, (100, 68, 40, 255))
+ellipse(d, 5, 3, 5, 2, (168, 126, 78, 255))
+ellipse(d, 5, 3, 2, 1, (130, 94, 56, 255))
+finish(img, "stump")
+
+# Tronco caído 26x9.
+img = Image.new("RGBA", (26, 9), T)
+d = ImageDraw.Draw(img)
+box(d, 1, 2, 24, 6, (96, 64, 38, 255))
+box(d, 1, 2, 24, 3, (122, 86, 52, 255))
+ellipse(d, 24, 4, 1, 2, (170, 128, 80, 255))
+for x in (6, 12, 18):
+    img.putpixel((x, 5), (70, 46, 28, 255))
+finish(img, "log")
+
+# Carcaça de carro (de cima, frente para cima) 16x28, em duas cores.
+for name, body, dark in (("wreck_a", (150, 70, 52, 255), (108, 46, 36, 255)), ("wreck_b", (92, 110, 128, 255), (62, 76, 92, 255))):
+    img = Image.new("RGBA", (16, 28), T)
+    d = ImageDraw.Draw(img)
+    box(d, 1, 2, 14, 25, body)
+    box(d, 1, 2, 14, 4, dark)
+    box(d, 2, 7, 13, 11, (40, 50, 60, 255))
+    box(d, 3, 8, 6, 9, (96, 120, 140, 255))
+    box(d, 2, 16, 13, 19, (40, 50, 60, 255))
+    box(d, 1, 23, 14, 25, dark)
+    box(d, 6, 12, 9, 14, dark)  # capô amassado
+    for y in (5, 21):
+        box(d, 0, y, 1, y + 3, (22, 22, 26, 255))
+        box(d, 14, y, 15, y + 3, (22, 22, 26, 255))
+    for x, y in ((4, 14), (10, 12), (3, 22), (11, 6)):
+        img.putpixel((x, y), (124, 66, 34, 255))  # ferrugem
+    finish(img, name)
+
+# Barril 8x11, pneus 11x8, caixote 12x12.
+img = Image.new("RGBA", (8, 11), T)
+d = ImageDraw.Draw(img)
+box(d, 1, 1, 6, 9, (168, 62, 44, 255))
+box(d, 1, 1, 2, 9, (204, 96, 68, 255))
+box(d, 1, 3, 6, 3, (96, 34, 26, 255))
+box(d, 1, 7, 6, 7, (96, 34, 26, 255))
+finish(img, "barrel")
+
+img = Image.new("RGBA", (11, 8), T)
+d = ImageDraw.Draw(img)
+for cx, cy in ((3, 5), (7, 5), (5, 2)):
+    ellipse(d, cx, cy, 2, 2, (30, 30, 34, 255))
+    img.putpixel((cx, cy), (70, 70, 78, 255))
+finish(img, "tires")
+
+img = Image.new("RGBA", (12, 12), T)
+d = ImageDraw.Draw(img)
+box(d, 1, 1, 10, 10, (150, 112, 66, 255))
+box(d, 1, 1, 10, 2, (186, 146, 90, 255))
+d.line([(1, 1), (10, 10)], fill=(104, 74, 42, 255))
+d.line([(10, 1), (1, 10)], fill=(104, 74, 42, 255))
+finish(img, "crate")
+
+# Poste de luz 8x28 e placa da 96.6 FM 20x26.
+img = Image.new("RGBA", (8, 28), T)
+d = ImageDraw.Draw(img)
+box(d, 3, 6, 4, 26, (86, 92, 100, 255))
+box(d, 1, 3, 6, 5, (70, 76, 84, 255))
+box(d, 2, 5, 5, 6, (255, 226, 130, 255))
+finish(img, "lamp")
+
+img = Image.new("RGBA", (20, 26), T)
+d = ImageDraw.Draw(img)
+box(d, 9, 14, 10, 24, (86, 92, 100, 255))
+box(d, 1, 1, 18, 14, (18, 40, 28, 255))
+box(d, 2, 2, 17, 13, (36, 110, 64, 255))
+# "96.6" em 3x5 pixels por dígito
+DIGITS = {"9": ["111", "101", "111", "001", "111"], "6": ["111", "100", "111", "101", "111"], ".": ["0", "0", "0", "0", "1"]}
+x0 = 3
+for ch in "96.6":
+    glyph = DIGITS[ch]
+    for gy, row in enumerate(glyph):
+        for gx, bit in enumerate(row):
+            if bit == "1":
+                img.putpixel((x0 + gx, 5 + gy), (210, 255, 220, 255))
+    x0 += len(glyph[0]) + 1
+box(d, 3, 11, 16, 11, (160, 255, 190, 255))
+finish(img, "sign96")
+
+# Ossos 10x6, flores 7x6 e tufo de capim 8x6 (enfeites sem colisão).
+img = Image.new("RGBA", (10, 6), T)
+d = ImageDraw.Draw(img)
+d.line([(1, 4), (8, 2)], fill=(220, 214, 196, 255))
+d.line([(2, 2), (7, 5)], fill=(196, 190, 172, 255))
+ellipse(d, 5, 3, 1, 1, (232, 228, 214, 255))
+finish(img, "bones")
+
+img = Image.new("RGBA", (7, 6), T)
+for x, y, c in ((1, 2, (240, 90, 120, 255)), (4, 1, (250, 220, 90, 255)), (5, 4, (170, 130, 240, 255)), (2, 4, (250, 250, 250, 255))):
+    img.putpixel((x, y), c)
+    img.putpixel((x, y + 1), (40, 100, 50, 255))
+img.save(os.path.join(OUT, "flowers.png"))
+
+img = Image.new("RGBA", (8, 6), T)
+for x, y in ((1, 5), (2, 3), (3, 5), (4, 2), (5, 5), (6, 4), (3, 4), (4, 4)):
+    img.putpixel((x, y), (70, 120, 64, 255))
+for x, y in ((2, 4), (4, 3)):
+    img.putpixel((x, y), (96, 156, 84, 255))
+img.save(os.path.join(OUT, "tuft.png"))
+
 # ------------------------------------------------------------------ Ícone do projeto
 icon = Image.new("RGBA", (128, 128), (10, 20, 14, 255))
 van_big = from_rows(VAN, VAN_PALETTE).resize((16 * 4, 28 * 4), Image.NEAREST)

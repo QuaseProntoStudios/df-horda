@@ -7,8 +7,8 @@ public partial class WorkshopScreen : PanelScreen
 {
     private const float ListX = 28f;
     private const float ListW = 264f;
-    private const float RowTop = 30f;
-    private const float RowH = 14f;
+    private const float RowTop = 34f;
+    private const float RowH = 11f;
 
     private int _sel;
     private string _message = "";
@@ -36,9 +36,9 @@ public partial class WorkshopScreen : PanelScreen
         if (!Visible) return;
 
         Backdrop(new Rect2(ListX - 10f, 5f, ListW + 20f, 170f));
-        Text(ListX, 9f, "OFICINA DA 96.6", UiStyle.Green, 12, bold: true);
-        Text(ListX, 10f, $"FICHAS: {MetaProgress.Fichas}", Gold, UiStyle.FontSize, HorizontalAlignment.Right, ListW, bold: true);
-        Text(ListX, 21f, "Fichas vêm de cada partida. Upgrades valem para todas as próximas.", UiStyle.Hint);
+        Text(ListX, 9f, "OFICINA DA 96.6", UiStyle.Green, 16, bold: true);
+        Text(ListX, 13f, $"FICHAS: {MetaProgress.Fichas}", Gold, UiStyle.FontSize, HorizontalAlignment.Right, ListW, bold: true);
+        Text(ListX, 22f, "Upgrades permanentes, pagos com fichas.", UiStyle.Hint);
 
         for (int i = 0; i < MetaProgress.All.Length; i++)
             DrawRow(MetaProgress.All[i], i == _sel, RowTop + i * (RowH + 1f));
@@ -47,12 +47,13 @@ public partial class WorkshopScreen : PanelScreen
         int level = MetaProgress.Level(def.Id);
         string now = level > 0 ? $"Agora: {def.Describe(level)}." : "Ainda não comprado.";
         string next = level < def.MaxLevel ? $" Próximo: {def.Describe(level + 1)}." : " Nível máximo!";
-        float y = RowTop + MetaProgress.All.Length * (RowH + 1f) + 3f;
-        Text(ListX, y, now + next, Colors.White, UiStyle.FontSize, HorizontalAlignment.Left, ListW);
+        float y = RowTop + MetaProgress.All.Length * (RowH + 1f) + 2f;
+        Text(ListX, y, now, Colors.White);
+        Text(ListX, y + 9f, next.Trim(), UiStyle.Hint);
 
         string footer = _message != "" ? _message : "Enter: comprar";
-        Text(ListX, 162f, footer, _message != "" ? Gold : UiStyle.Hint);
-        Text(ListX, 162f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
+        Text(ListX, 164f, footer, _message != "" ? Gold : UiStyle.Hint);
+        Text(ListX, 164f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
     }
 
     private void DrawRow(MetaDef def, bool selected, float top)
@@ -76,7 +77,7 @@ public partial class WorkshopScreen : PanelScreen
         for (int i = 0; i < def.MaxLevel; i++)
         {
             Color dot = i < level ? Gold : new Color(0.12f, 0.16f, 0.13f);
-            DrawRect(new Rect2(dotX + i * 5f, top + 5f, 4f, 4f), dot);
+            DrawRect(new Rect2(dotX + i * 5f, top + 4f, 4f, 4f), dot);
         }
 
         string cost = maxed ? "MÁX" : $"{def.CostAt(level)}";
@@ -102,7 +103,7 @@ public partial class WorkshopScreen : PanelScreen
 
         if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } button)
         {
-            if (button.Position.Y > 158f) { Close(); return true; }
+            if (button.Position.Y > 160f) { Close(); return true; }
 
             int row = RowAt(button.Position);
             if (row < 0) return false;

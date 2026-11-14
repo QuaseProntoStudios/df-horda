@@ -1,0 +1,48 @@
+name: Compilar o launcher
+description: Exporta o launcher (Godot padrão, sem .NET) para Windows e Linux em launcher-out/, com a versão no nome dos arquivos.
+runs:
+  using: composite
+  steps:
+    - name: Cache do Godot padrão
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/godot-std
+          ~/.local/share/godot/export_templates/4.7.2.stable
+        key: godot-std-4.7.2-stable
+
+    - name: Baixar Godot padrão e templates
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -e
+        TAG="4.7.2-stable"
+        BASE="https://github.com/godotengine/godot/releases/download/${TAG}"
+        ALT="https://github.com/godotengine/godot-builds/releases/download/${TAG}"
+        get() { curl -fsSL --retry 6 --retry-delay 15 --retry-all-errors -o "$2" "$BASE/$1" || curl -fsSL --retry 6 --retry-delay 15 --retry-all-errors -o "$2" "$ALT/$1"; }
+        get "Godot_v${TAG}_linux.x86_64.zip" editor.zip
+        get "Godot_v${TAG}_export_templates.tpz" templates.tpz
+        mkdir -p ~/godot-std
+        unzip -q editor.zip -d ~/godot-std
+        DEST="$HOME/.local/share/godot/export_templates/4.7.2.stable"
+        mkdir -p "$DEST"
+        unzip -q templates.tpz -d tpl
+        mv tpl/templates/* "$DEST/"
+        rm -rf editor.zip templates.tpz tpl
+
+    - name: Exportar o launcher
+      shell: bash
+      run: |
+        set -e
+        BIN=$(find ~/godot-std -type f -name "Godot_v*_linux.x86_64" | head -1)
+        chmod +x "$BIN"
+        LVER=$(grep -oP 'config/version="\K[^"]+' launcher/app/project.godot)
+        grep -q "LAUNCHER_VERSION := \"$LVER\"" launcher/app/launcher.gd || { echo "LAUNCHER_VERSION do launcher.gd e config/version do project.godot precisam ser iguais ($LVER)"; exit 1; }
+        mkdir -p out launcher-out
+        "$BIN" --headless --path launcher/app --import || true
+        "$BIN" --headless --path launcher/app --export-release "Windows Desktop" ../../out/DeadFrequencyHordaLauncher.exe
+        "$BIN" --headless --path launcher/app --export-release "Linux" ../../out/DeadFrequencyHordaLauncher.x86_64
+        mv out/DeadFrequencyHordaLauncher.exe "launcher-out/DeadFrequencyHordaLauncher-${LVER}-windows.exe"
+        mv out/DeadFrequencyHordaLauncher.x86_64 "launcher-out/DeadFrequencyHordaLauncher-${LVER}-linux.x86_64"
+        ls -la launcher-out

@@ -1,0 +1,27 @@
+; Launcher do Dead Frequency: Horda (projeto Godot separado, só GDScript).
+; Baixa e atualiza o jogo pelos releases do GitHub e atualiza a si mesmo. Exportado pelo CI com os templates padrão.
+; Ao mudar launcher.gd: suba LAUNCHER_VERSION no script e config/version aqui (os dois iguais).
+
+config_version=5
+
+[application]
+
+config/name="Dead Frequency Horda Launcher"
+config/description="Instala e atualiza o Dead Frequency: Horda pelo GitHub."
+config/version="1.0.2"
+run/main_scene="res://launcher.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
+
+[display]
+
+window/size/viewport_width=760
+window/size/viewport_height=460
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

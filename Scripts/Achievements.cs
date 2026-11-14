@@ -31,7 +31,7 @@ public static class Achievements
         A("quinhentos", "Horda no Retrovisor", "Derrote 500 inimigos em uma partida.", 10),
         A("mil", "Mil Zumbis", "Derrote 1.000 inimigos em uma partida.", 15),
         A("tres_mil", "Ceifador de Asfalto", "Derrote 3.000 inimigos em uma partida.", 30),
-        A("dedetizadora", "Dedetizadora", "Derrote 10.000 inimigos somando todas as partidas.", 25),
+        A("dedetizadora", "Dedetizadora", "Derrote 10.000 inimigos no total.", 25),
         A("atropelador", "Rolo Compressor", "Atropele 150 inimigos em uma partida.", 10),
         A("nivel10", "Subindo a Serra", "Chegue ao nível 10.", 5),
         A("nivel25", "Quase no Topo", "Chegue ao nível 25.", 10),
@@ -40,7 +40,7 @@ public static class Achievements
         A("tempo10", "Turno Dobrado", "Sobreviva 10 minutos.", 10),
         A("intocavel", "Intocável", "Fique 90 segundos sem tomar dano.", 15),
         A("alfa", "Caçador de Alfa", "Derrote um Brutamontes Alfa.", 10),
-        A("bombas", "Desarmador", "Derrote 10 Bombas Ambulantes antes que explodam.", 10),
+        A("bombas", "Desarmador", "Derrote 10 Bombas antes que explodam.", 10),
         A("chefe", "Zumbão Aposentado", "Derrote o Zumbão da 96.6.", 40),
         A("chefe_dificil", "Sinal Limpo", "Derrote o chefe na dificuldade Difícil.", 60),
         A("chefe_pesadelo", "Lenda da 96.6", "Derrote o chefe no Pesadelo.", 120, true),
@@ -53,7 +53,7 @@ public static class Achievements
         A("retomada", "Volta e Meia", "Retome uma partida salva.", 3),
         A("oficina", "Oficina Aberta", "Compre seu primeiro upgrade permanente.", 5),
         A("cliente_fiel", "Cliente Fiel", "Compre 10 níveis de upgrades permanentes.", 15),
-        A("mecanico", "Mecânico-Chefe", "Leve um upgrade permanente ao nível máximo.", 25),
+        A("mecanico", "Mecânico-Chefe", "Leve um upgrade da oficina ao máximo.", 25),
         A("segunda_chance", "Ainda Não Foi Dessa", "Use a Segunda Chance da oficina.", 10, true),
     };
 

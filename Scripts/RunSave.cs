@@ -17,6 +17,7 @@ public sealed class RunData
     public float VanX;
     public float VanY;
     public float Heading;
+    public int Seed;
     public readonly Dictionary<string, int> Levels = new();
     public readonly Dictionary<string, float> Power = new();
 }
@@ -42,6 +43,7 @@ public static class RunSave
         cfg.SetValue("run", "van_x", data.VanX);
         cfg.SetValue("run", "van_y", data.VanY);
         cfg.SetValue("run", "heading", data.Heading);
+        cfg.SetValue("run", "seed", data.Seed);
         foreach (UpgradeDef def in UpgradeCatalog.All)
         {
             cfg.SetValue("levels", def.Id, data.Levels[def.Id]);
@@ -69,6 +71,7 @@ public static class RunSave
             Hp = cfg.GetValue("run", "hp", 100f).AsSingle(),
             VanX = cfg.GetValue("run", "van_x", 0f).AsSingle(),
             VanY = cfg.GetValue("run", "van_y", 0f).AsSingle(),
+            Seed = cfg.GetValue("run", "seed", 0).AsInt32(),
             Heading = cfg.GetValue("run", "heading", -Mathf.Pi / 2f).AsSingle(),
         };
         foreach (UpgradeDef def in UpgradeCatalog.All)

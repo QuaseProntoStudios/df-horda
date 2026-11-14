@@ -53,8 +53,8 @@ public abstract partial class PanelScreen : Control
 
     protected void Backdrop(Rect2 panel)
     {
-        DrawRect(new Rect2(Vector2.Zero, Size), new Color(0f, 0f, 0f, 0.82f));
-        DrawRect(panel, new Color(0.01f, 0.04f, 0.02f, 0.96f));
+        DrawRect(new Rect2(Vector2.Zero, Size), new Color(0f, 0f, 0f, 0.55f));
+        DrawRect(panel, new Color(0.01f, 0.04f, 0.02f, 0.88f));
         DrawRect(panel, UiStyle.GreenDim, false, 1f);
     }
 

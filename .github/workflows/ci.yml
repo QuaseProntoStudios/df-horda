@@ -4,7 +4,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, beta]
   pull_request:
   workflow_dispatch:
 
@@ -27,6 +27,8 @@ jobs:
 
       - name: Site gera sem erro
         run: python3 site/build.py
+
+      - uses: ./.github/actions/build-launcher
 
       - uses: ./.github/actions/setup-godot
 
