@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Dead Frequency: Horda"
 config/description="Sobrevivência em pixel art no universo de Dead Frequency: a van contra a horda, ao som da rádio 96.6."
-run/main_scene="res://Scenes/main.tscn"
+run/main_scene="res://Scenes/main_menu.tscn"
 config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 config/icon="res://icon.png"
 

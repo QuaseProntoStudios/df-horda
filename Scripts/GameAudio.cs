@@ -15,7 +15,7 @@ public partial class GameAudio : Node
         "Radio/radio_05_neon_na_rodovia.ogg",
     };
 
-    private const int SfxVoices = 8;
+    private const int SfxVoices = 14;
 
     private AudioStreamPlayer _radio;
     private AudioStreamPlayer _engine;
@@ -27,11 +27,11 @@ public partial class GameAudio : Node
 
     public override void _Ready()
     {
-        _radio = new AudioStreamPlayer { VolumeDb = -9f };
+        _radio = new AudioStreamPlayer { VolumeDb = -12f, Bus = GameSettings.BusMusic };
         AddChild(_radio);
         _radio.Finished += PlayNextTrack;
 
-        _engine = new AudioStreamPlayer { VolumeDb = -20f };
+        _engine = new AudioStreamPlayer { VolumeDb = -22f, Bus = GameSettings.BusSfx };
         AddChild(_engine);
         _engine.Stream = Assets.Stream("SFX/engine_loop.wav");
         _engine.Finished += RestartEngine;
@@ -48,7 +48,7 @@ public partial class GameAudio : Node
         PlayNextTrack();
     }
 
-    public void Play(string relativePath, float volumeDb = -6f, float pitch = 1f)
+    public void Play(string relativePath, float volumeDb = -6f, float pitch = 1f, string bus = null)
     {
         AudioStream stream = Assets.Stream(relativePath);
         if (stream == null) return;
@@ -56,9 +56,21 @@ public partial class GameAudio : Node
         AudioStreamPlayer voice = _sfx[_nextVoice];
         _nextVoice = (_nextVoice + 1) % SfxVoices;
         voice.Stream = stream;
+        voice.Bus = bus ?? GameSettings.BusSfx;
         voice.VolumeDb = volumeDb;
         voice.PitchScale = pitch;
         voice.Play();
+    }
+
+    /// <summary>Som causado por inimigos (batidas, cuspes, explosões): tem volume próprio nas configurações.</summary>
+    public void PlayEnemy(string relativePath, float volumeDb = -6f, float pitch = 1f)
+    {
+        Play(relativePath, volumeDb, pitch, GameSettings.BusEnemy);
+    }
+
+    public void PlayUi(string relativePath, float volumeDb = -6f, float pitch = 1f)
+    {
+        Play(relativePath, volumeDb, pitch, GameSettings.BusUi);
     }
 
     /// <summary>speedFraction: 0 parado, 1 na velocidade máxima.</summary>

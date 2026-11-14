@@ -9,10 +9,11 @@ public partial class PulseFx : Node2D
 
     private float _maxRadius;
     private float _age;
+    private Color _color = new(0.2f, 1f, 0.4f);
 
-    public static PulseFx Create(Vector2 position, float radius)
+    public static PulseFx Create(Vector2 position, float radius, Color? color = null)
     {
-        return new PulseFx { Position = position, _maxRadius = radius, ZIndex = 3 };
+        return new PulseFx { Position = position, _maxRadius = radius, ZIndex = 3, _color = color ?? new Color(0.2f, 1f, 0.4f) };
     }
 
     public override void _Process(double delta)
@@ -30,7 +31,7 @@ public partial class PulseFx : Node2D
     {
         float t = _age / Duration;
         float radius = Mathf.Lerp(4f, _maxRadius, t);
-        var color = new Color(0.2f, 1f, 0.4f, 1f - t);
+        var color = new Color(_color.R, _color.G, _color.B, 1f - t);
         DrawArc(Vector2.Zero, radius, 0f, Mathf.Tau, 32, color, 1f);
         if (radius > 6f)
             DrawArc(Vector2.Zero, radius - 4f, 0f, Mathf.Tau, 32, new Color(color.R, color.G, color.B, color.A * 0.5f), 1f);
