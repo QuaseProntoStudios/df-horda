@@ -33,7 +33,7 @@ public partial class Van : Node2D
         _sprite = new Sprite2D
         {
             Texture = Assets.Texture("van"),
-            ZIndex = 2,
+            ZIndex = 1,
         };
         AddChild(_sprite);
         UpdateSprite();

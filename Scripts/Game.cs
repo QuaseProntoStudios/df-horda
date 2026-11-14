@@ -92,7 +92,6 @@ public partial class Game : Node2D
     private const float BulletSpeed = 190f;
     private const float BulletRange = 150f;
     private const float BaseMagnet = 22f;
-    private const float GroundTile = 64f;
     private const float RepairHeal = 0.25f;
 
     private static readonly float[] HordeTimes = { 150f, 330f, 510f, 690f };
@@ -102,7 +101,9 @@ public partial class Game : Node2D
     private readonly Random _random = new();
 
     private Van _van;
-    private Sprite2D _ground;
+    private Scenery _scenery;
+    private int _seed;
+    private float _crashCooldown;
     private Camera2D _camera;
     private Node2D _world;
     private Hud _hud;
@@ -192,15 +193,10 @@ public partial class Game : Node2D
         _world = new Node2D();
         AddChild(_world);
 
-        _ground = new Sprite2D
-        {
-            Texture = Assets.Texture("ground"),
-            TextureRepeat = TextureRepeatEnum.Enabled,
-            RegionEnabled = true,
-            RegionRect = new Rect2(0f, 0f, GroundTile * 8f, GroundTile * 6f),
-            ZIndex = -10,
-        };
-        _world.AddChild(_ground);
+        _seed = loaded != null && loaded.Seed != 0 ? loaded.Seed : (int)(GD.Randi() & 0x7FFFFFFF);
+        _world.YSortEnabled = true;
+        _scenery = new Scenery(_world, _seed);
+        _world.AddChild(_scenery);
 
         _van = new Van();
         _world.AddChild(_van);
@@ -286,6 +282,7 @@ public partial class Game : Node2D
         UpdateTimeline();
 
         _van.Tick(dt);
+        CollideScenery(dt);
         _audio.SetEngine(_van.Speed / _van.MaxSpeed);
         UpdateGround();
         UpdateShake(dt);
@@ -568,6 +565,7 @@ public partial class Game : Node2D
             }
 
             enemy.Position += (move + enemy.Knockback) * dt;
+            if (!def.Boss) enemy.Position = _scenery.PushOut(enemy.Position, 5f);
             enemy.Knockback = enemy.Knockback.MoveToward(Vector2.Zero, 320f * dt);
 
             Separate(enemy, _enemies[(i + 1) % count]);
@@ -710,6 +708,18 @@ public partial class Game : Node2D
     private void Release(Enemy enemy)
     {
         if (_typeCount.TryGetValue(enemy.Def, out int count)) _typeCount[enemy.Def] = Math.Max(0, count - 1);
+    }
+
+    private void CollideScenery(float dt)
+    {
+        if (_crashCooldown > 0f) _crashCooldown -= dt;
+        float impact = _scenery.CollideVan(_van);
+        if (impact < 25f || _crashCooldown > 0f) return;
+
+        _crashCooldown = 0.45f;
+        _shake = Mathf.Max(_shake, Mathf.Min(1.5f + impact * 0.03f, 4f));
+        _audio.PlayEnemy("SFX/impact_box.wav", -6f, 0.7f);
+        if (impact > 70f) HurtVan((impact - 70f) * 0.15f);
     }
 
     private void HurtVan(float damage)
@@ -1252,7 +1262,7 @@ public partial class Game : Node2D
         var data = new RunData
         {
             Difficulty = _diffIndex, Level = _level, Kills = _kills, HordeIndex = _hordeIndex, EliteIndex = _eliteIndex,
-            Time = _time, Xp = _xp, Hp = _hp, VanX = _van.Position.X, VanY = _van.Position.Y, Heading = _van.Heading,
+            Time = _time, Xp = _xp, Hp = _hp, VanX = _van.Position.X, VanY = _van.Position.Y, Heading = _van.Heading, Seed = _seed,
         };
         foreach (UpgradeDef def in UpgradeCatalog.All)
         {
@@ -1267,7 +1277,7 @@ public partial class Game : Node2D
 
     private void UpdateGround()
     {
-        _ground.Position = (_van.Position / GroundTile).Floor() * GroundTile;
+        _scenery.Update(_van.Position);
     }
 
     private void UpdateShake(float dt)

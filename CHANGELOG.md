@@ -6,6 +6,8 @@ Para lançar uma versão nova: mude `Current` em `Scripts/GameVersion.cs`, escre
 
 ## v0.3.1 — Launcher  (14/11/2026)
 
+- Cenário novo e infinito: campo, floresta, terra arrasada e ferro-velho, com estradas, árvores, pedras, carcaças, barris e postes. Obstáculos bloqueiam a van (e os zumbis), e batidas fortes causam dano.
+- Menu: caixa de seleção menor e versão discreta no rodapé.
 - **Launcher** próprio (Windows e Linux): instala o jogo, atualiza sozinho e abre com um clique. Vem junto de cada release.
 - O launcher também se atualiza sozinho (dá para desligar na engrenagem).
 - Dois canais de versão: **Estável** (releases) e **Beta** (builds novos do branch `beta`, com mais chance de bug). Dá para trocar a qualquer hora.
