@@ -4,7 +4,7 @@
 # Configurações em user://launcher.cfg; a versão instalada do jogo fica em <pasta>/version.txt.
 extends Control
 
-const LAUNCHER_VERSION := "1.0.1"
+const LAUNCHER_VERSION := "1.0.2"
 const REPO := "dieguesmosken/df-horda"
 const API := "https://api.github.com/repos/%s/releases?per_page=30" % REPO
 const RELEASES := "https://github.com/%s/releases" % REPO
@@ -38,6 +38,7 @@ var http_dl: HTTPRequest
 var http_self: HTTPRequest
 var _self_resolving := false
 var _self_busy := false
+var _self_expected := ""
 var downloading := false
 var dl_started := 0.0
 var installing := false
@@ -807,6 +808,7 @@ func _start_self_update() -> void:
 	if _self_busy:
 		return
 	_self_busy = true
+	_self_expected = _expected_hash(launcher_name)
 	_set_status("Atualizando o launcher para a versão %s..." % launcher_remote, CYAN)
 	bar.value = 0
 	http_self.download_file = ""
@@ -835,7 +837,7 @@ func _on_self_download(result: int, code: int, headers: PackedStringArray, _b: P
 		DirAccess.remove_absolute(_self_new_path())
 		_self_failed("O download do launcher falhou (%d / %d)." % [result, code])
 		return
-	if not _hash_ok(_self_new_path(), launcher_name):
+	if _self_expected != "" and FileAccess.get_sha256(_self_new_path()) != _self_expected:
 		DirAccess.remove_absolute(_self_new_path())
 		_self_failed("O launcher novo não confere com o checksum do release.")
 		return

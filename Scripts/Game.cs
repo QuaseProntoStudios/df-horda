@@ -283,6 +283,7 @@ public partial class Game : Node2D
 
         _van.Tick(dt);
         CollideScenery(dt);
+        if (_state != State.Playing) return;
         _audio.SetEngine(_van.Speed / _van.MaxSpeed);
         UpdateGround();
         UpdateShake(dt);
@@ -719,7 +720,7 @@ public partial class Game : Node2D
         _crashCooldown = 0.45f;
         _shake = Mathf.Max(_shake, Mathf.Min(1.5f + impact * 0.03f, 4f));
         _audio.PlayEnemy("SFX/impact_box.wav", -6f, 0.7f);
-        if (impact > 70f) HurtVan((impact - 70f) * 0.15f);
+        if (impact > 70f && _invulnerable <= 0f) HurtVan((impact - 70f) * 0.15f);
     }
 
     private void HurtVan(float damage)
