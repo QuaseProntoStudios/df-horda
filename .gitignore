@@ -1,0 +1,12 @@
+# Godot 4
+.godot/
+/android/
+*.translation
+
+# .NET
+.mono/
+bin/
+obj/
+*.user
+.vs/
+.vscode/
