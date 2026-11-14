@@ -159,7 +159,7 @@ public partial class MainMenu : Node2D
         AchievementToast.Create(this);
 
         var footer = UiStyle.MakeLabel($"v{GameVersion.Full}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
-        footer.Position = new Vector2(4f, 3f);
+        footer.Position = new Vector2(3f, 172f);
         layer.AddChild(footer);
 
         // Se existe partida salva, o cursor já cai em "Continuar".

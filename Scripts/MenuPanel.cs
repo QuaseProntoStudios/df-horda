@@ -127,7 +127,7 @@ public partial class MenuPanel : Control
         if (_sel >= 0 && _sel < _page.Items.Count)
         {
             string hint = _page.Items[_sel].Hint?.Invoke();
-            if (!string.IsNullOrEmpty(hint)) DrawCentered(hint, 168f, UiStyle.FontSize, UiStyle.Hint);
+            if (!string.IsNullOrEmpty(hint)) DrawCentered(hint, 161f, UiStyle.FontSize, UiStyle.Hint);
         }
     }
 
@@ -139,8 +139,15 @@ public partial class MenuPanel : Control
 
         if (selected && enabled)
         {
-            DrawRect(rect, UiStyle.SelectBg);
-            DrawRect(rect, UiStyle.Green, false, 1f);
+            Rect2 box = rect;
+            if (item.Kind == Kind.Button)
+            {
+                // Caixa justa ao texto, bem menor que a linha inteira.
+                float w = Mathf.Min(RowW, _font.GetStringSize(item.Display, HorizontalAlignment.Left, -1, UiStyle.FontSize).X + 16f);
+                box = new Rect2(RowX + (RowW - w) / 2f, top + 1f, w, RowH - 2f);
+            }
+            DrawRect(box, UiStyle.SelectBg);
+            DrawRect(box, UiStyle.Green, false, 1f);
         }
 
         Color color = !enabled ? UiStyle.Disabled : selected ? Colors.White : UiStyle.Green;
