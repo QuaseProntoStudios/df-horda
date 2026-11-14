@@ -127,7 +127,7 @@ public partial class MenuPanel : Control
         if (_sel >= 0 && _sel < _page.Items.Count)
         {
             string hint = _page.Items[_sel].Hint?.Invoke();
-            if (!string.IsNullOrEmpty(hint)) DrawCentered(hint, 161f, UiStyle.FontSize, UiStyle.Hint);
+            if (!string.IsNullOrEmpty(hint)) DrawCentered(hint, 158f, UiStyle.FontSize, UiStyle.Hint);
         }
     }
 

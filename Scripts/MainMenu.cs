@@ -38,8 +38,11 @@ public partial class MainMenu : Node2D
         BuildMenu();
     }
 
+    private Label _footer;
+
     public override void _Process(double delta)
     {
+        if (_footer != null) _footer.Visible = _menu.Visible;
         float dt = (float)delta;
         _time += dt;
 
@@ -158,9 +161,9 @@ public partial class MainMenu : Node2D
         layer.AddChild(_workshop);
         AchievementToast.Create(this);
 
-        var footer = UiStyle.MakeLabel($"v{GameVersion.Full}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
-        footer.Position = new Vector2(3f, 172f);
-        layer.AddChild(footer);
+        _footer = UiStyle.MakeLabel($"v{GameVersion.Full}", Colors.White);
+        _footer.Position = new Vector2(3f, 167f);
+        layer.AddChild(_footer);
 
         // Se existe partida salva, o cursor já cai em "Continuar".
         if (RunSave.Exists) main.StartIndex = 1;

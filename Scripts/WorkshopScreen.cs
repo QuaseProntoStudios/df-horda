@@ -7,8 +7,8 @@ public partial class WorkshopScreen : PanelScreen
 {
     private const float ListX = 28f;
     private const float ListW = 264f;
-    private const float RowTop = 36f;
-    private const float RowH = 12f;
+    private const float RowTop = 34f;
+    private const float RowH = 11f;
 
     private int _sel;
     private string _message = "";
@@ -38,7 +38,7 @@ public partial class WorkshopScreen : PanelScreen
         Backdrop(new Rect2(ListX - 10f, 5f, ListW + 20f, 170f));
         Text(ListX, 9f, "OFICINA DA 96.6", UiStyle.Green, 16, bold: true);
         Text(ListX, 13f, $"FICHAS: {MetaProgress.Fichas}", Gold, UiStyle.FontSize, HorizontalAlignment.Right, ListW, bold: true);
-        Text(ListX, 27f, "Fichas vêm das partidas. Upgrades valem para sempre.", UiStyle.Hint);
+        Text(ListX, 22f, "Upgrades permanentes, pagos com fichas.", UiStyle.Hint);
 
         for (int i = 0; i < MetaProgress.All.Length; i++)
             DrawRow(MetaProgress.All[i], i == _sel, RowTop + i * (RowH + 1f));
@@ -47,13 +47,13 @@ public partial class WorkshopScreen : PanelScreen
         int level = MetaProgress.Level(def.Id);
         string now = level > 0 ? $"Agora: {def.Describe(level)}." : "Ainda não comprado.";
         string next = level < def.MaxLevel ? $" Próximo: {def.Describe(level + 1)}." : " Nível máximo!";
-        float y = RowTop + MetaProgress.All.Length * (RowH + 1f) + 1f;
+        float y = RowTop + MetaProgress.All.Length * (RowH + 1f) + 2f;
         Text(ListX, y, now, Colors.White);
         Text(ListX, y + 9f, next.Trim(), UiStyle.Hint);
 
         string footer = _message != "" ? _message : "Enter: comprar";
-        Text(ListX, 172f, footer, _message != "" ? Gold : UiStyle.Hint);
-        Text(ListX, 172f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
+        Text(ListX, 164f, footer, _message != "" ? Gold : UiStyle.Hint);
+        Text(ListX, 164f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
     }
 
     private void DrawRow(MetaDef def, bool selected, float top)
@@ -103,7 +103,7 @@ public partial class WorkshopScreen : PanelScreen
 
         if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } button)
         {
-            if (button.Position.Y > 168f) { Close(); return true; }
+            if (button.Position.Y > 160f) { Close(); return true; }
 
             int row = RowAt(button.Position);
             if (row < 0) return false;

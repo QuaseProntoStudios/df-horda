@@ -51,8 +51,8 @@ public partial class AchievementsScreen : PanelScreen
             DrawRect(new Rect2(ListX + ListW + 3f, thumbY, 2f, thumbH), UiStyle.Green);
         }
 
-        Text(ListX, 168f, "Setas ou roda: rolar", UiStyle.Hint);
-        Text(ListX, 168f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
+        Text(ListX, 163f, "Setas ou roda: rolar", UiStyle.Hint);
+        Text(ListX, 163f, "Esc: voltar", UiStyle.Hint, UiStyle.FontSize, HorizontalAlignment.Right, ListW);
     }
 
     private void DrawRow(AchievementDef def, bool selected, float top)
@@ -72,7 +72,7 @@ public partial class AchievementsScreen : PanelScreen
         bool hide = def.Secret && !unlocked;
         Color nameColor = unlocked ? Colors.White : UiStyle.Disabled;
         Text(ListX + 24f, top + 1f, hide ? "Conquista secreta" : def.Name, nameColor, UiStyle.FontSize, bold: true);
-        Text(ListX + 24f, top + 12f, hide ? "Continue jogando para descobrir." : def.Description,
+        Text(ListX + 24f, top + 10f, hide ? "Continue jogando para descobrir." : def.Description,
             unlocked ? UiStyle.Hint : UiStyle.Disabled);
         if (def.Reward > 0)
         {
@@ -96,7 +96,7 @@ public partial class AchievementsScreen : PanelScreen
         {
             if (button.ButtonIndex == MouseButton.WheelDown) return Move(1);
             if (button.ButtonIndex == MouseButton.WheelUp) return Move(-1);
-            if (button.ButtonIndex == MouseButton.Left && button.Position.Y > 164f)
+            if (button.ButtonIndex == MouseButton.Left && button.Position.Y > 158f)
             {
                 Close();
                 return true;
