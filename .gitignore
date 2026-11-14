@@ -10,3 +10,9 @@ obj/
 *.user
 .vs/
 .vscode/
+
+# Gerado pelo site/build.py e pelas exportações
+site/data/
+site/assets/sprites/
+build/
+*.zip

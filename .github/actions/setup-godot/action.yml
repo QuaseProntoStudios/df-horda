@@ -1,0 +1,52 @@
+name: Instalar Godot .NET
+description: Baixa o Godot .NET e os templates de exportação (com cache) e deixa o executável em $GODOT.
+inputs:
+  version:
+    description: Versão do Godot
+    default: "4.7.2"
+  status:
+    description: stable, rc, beta...
+    default: stable
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Cache do Godot
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/godot-editor
+          ~/.local/share/godot/export_templates
+        key: godot-mono-${{ inputs.version }}-${{ inputs.status }}
+
+    - name: Baixar Godot .NET e templates
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        set -e
+        TAG="${{ inputs.version }}-${{ inputs.status }}"
+        BASE="https://github.com/godotengine/godot/releases/download/${TAG}"
+        ALT="https://github.com/godotengine/godot-builds/releases/download/${TAG}"
+        EDITOR="Godot_v${TAG}_mono_linux_x86_64.zip"
+        TPZ="Godot_v${TAG}_mono_export_templates.tpz"
+        get() { curl -fsSL --retry 6 --retry-delay 15 --retry-all-errors -o "$2" "$BASE/$1" || curl -fsSL --retry 6 --retry-delay 15 --retry-all-errors -o "$2" "$ALT/$1"; }
+        get "$EDITOR" editor.zip
+        get "$TPZ" templates.tpz
+        mkdir -p ~/godot-editor
+        unzip -q editor.zip -d ~/godot-editor
+        DEST="$HOME/.local/share/godot/export_templates/${{ inputs.version }}.${{ inputs.status }}.mono"
+        mkdir -p "$DEST"
+        unzip -q templates.tpz -d tpl
+        mv tpl/templates/* "$DEST/"
+        rm -rf editor.zip templates.tpz tpl
+
+    - name: Localizar o executável
+      shell: bash
+      run: |
+        BIN=$(find ~/godot-editor -type f -name "Godot_v*_mono_linux.x86_64" | head -1)
+        chmod +x "$BIN"
+        echo "GODOT=$BIN" >> "$GITHUB_ENV"

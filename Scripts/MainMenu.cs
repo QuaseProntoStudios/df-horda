@@ -146,7 +146,7 @@ public partial class MainMenu : Node2D
 
         _menu.AddPage(SettingsPages.Build(_menu, "main", 0.78f));
 
-        var footer = UiStyle.MakeLabel("v0.2  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
+        var footer = UiStyle.MakeLabel($"v{GameVersion.Current}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
         footer.Position = new Vector2(4f, 168f);
         layer.AddChild(footer);
 

@@ -1,0 +1,71 @@
+# Compila e publica um Release no GitHub quando a versão nova chega na main
+# (Scripts/GameVersion.cs muda), ou pelo botão "Run workflow". Se o release da versão já existe, não faz nada.
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: [Scripts/GameVersion.cs]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versão do jogo
+        id: ver
+        run: |
+          python3 Tools/changelog.py check
+          VER=$(grep -oP 'Current = "\K[0-9.]+' Scripts/GameVersion.cs)
+          TITLE=$(grep -oP "^## v$VER — \K.*?(?=  \()" CHANGELOG.md | head -1)
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          if gh release view "v$VER" >/dev/null 2>&1; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
+          echo "Versão $VER — $TITLE"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - uses: ./.github/actions/setup-godot
+        if: steps.ver.outputs.exists == 'false'
+
+      - name: Importar assets e compilar o C#
+        if: steps.ver.outputs.exists == 'false'
+        run: |
+          "$GODOT" --headless --import --path . || true
+          dotnet build DeadFrequencyHorda.csproj -c ExportRelease
+
+      - name: Exportar Windows e Linux
+        if: steps.ver.outputs.exists == 'false'
+        run: |
+          set -e
+          mkdir -p build/windows build/linux
+          "$GODOT" --headless --path . --export-release "Windows Desktop" build/windows/DeadFrequencyHorda.exe
+          "$GODOT" --headless --path . --export-release "Linux" build/linux/DeadFrequencyHorda.x86_64
+          chmod +x build/linux/DeadFrequencyHorda.x86_64
+
+      - name: Empacotar e gerar SHA256SUMS
+        if: steps.ver.outputs.exists == 'false'
+        run: |
+          set -e
+          VER=${{ steps.ver.outputs.version }}
+          cp LICENSE README.md build/windows/
+          cp LICENSE README.md build/linux/
+          (cd build/windows && zip -qr "../../DeadFrequencyHorda-v${VER}-windows.zip" .)
+          (cd build/linux && zip -qr "../../DeadFrequencyHorda-v${VER}-linux.zip" .)
+          sha256sum DeadFrequencyHorda-v${VER}-windows.zip DeadFrequencyHorda-v${VER}-linux.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publicar release
+        if: steps.ver.outputs.exists == 'false'
+        run: |
+          VER=${{ steps.ver.outputs.version }}
+          python3 Tools/changelog.py notes "$VER" > notes.md
+          gh release create "v$VER" DeadFrequencyHorda-v${VER}-windows.zip DeadFrequencyHorda-v${VER}-linux.zip SHA256SUMS.txt \
+            --title "v$VER — ${{ steps.ver.outputs.title }}" --notes-file notes.md --target "$GITHUB_SHA"
+        env:
+          GH_TOKEN: ${{ github.token }}

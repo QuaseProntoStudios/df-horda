@@ -1,0 +1,85 @@
+:root{--bg:#050806;--panel:#0a120d;--line:#143521;--g:#33ff66;--gd:#1a7a36;--tx:#cfeeda;--dim:#6f9a80;--red:#ff4033;--px:4}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 "IBM Plex Mono",ui-monospace,monospace}
+a{color:var(--g)}
+b{color:#eafff1}
+code,kbd{background:#0d1c13;border:1px solid var(--line);padding:0 .35em;border-radius:3px;font-size:.92em}
+kbd{margin:0 .15em;color:var(--g)}
+.dim{color:var(--dim)}.small{font-size:.85rem}
+.scanlines{position:fixed;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+
+.nav{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.7rem 1.2rem;background:rgba(5,8,6,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(4px)}
+.brand{font:1.6rem "VT323",monospace;color:var(--g);text-decoration:none;letter-spacing:.08em}
+.brand small{color:var(--dim);font-size:1.1rem}
+.dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--g);margin-right:.5rem;animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.25}}
+.nav nav{display:flex;gap:1rem;flex-wrap:wrap}
+.nav nav a{color:var(--tx);text-decoration:none;font-size:.9rem}
+.nav nav a:hover{color:var(--g)}
+
+.hero{padding:4rem 1.2rem 3rem;background:radial-gradient(ellipse at 50% 0,#0e2a18 0,transparent 65%)}
+.hero-inner{max-width:900px;margin:0 auto;text-align:center}
+.tag{color:var(--dim);font-size:.9rem}
+h1{font:clamp(3rem,10vw,6rem)/.95 "VT323",monospace;margin:.3rem 0 1rem;color:var(--g);text-shadow:0 0 18px rgba(51,255,102,.45)}
+h1 span{color:#b8ffcb;font-size:.7em;letter-spacing:.4em}
+.lead{max-width:680px;margin:0 auto 1.6rem;color:var(--tx)}
+.cta{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem}
+.btn{display:inline-block;padding:.65rem 1.1rem;border:1px solid var(--gd);color:var(--g);text-decoration:none;font-weight:600;background:var(--panel)}
+.btn:hover{background:#0f2417;border-color:var(--g)}
+.btn.primary{background:var(--g);color:#031008;border-color:var(--g)}
+.btn.primary:hover{background:#6dffa0}
+
+/* Sprites: folhas de 2 quadros lado a lado, ampliadas sem borrar. */
+.spr{display:inline-block;image-rendering:pixelated;background-repeat:no-repeat;background-size:100% 100%;vertical-align:bottom}
+.spr.walk{background-size:200% 100%;animation:walk .5s steps(1) infinite}
+@keyframes walk{0%{background-position:0 0}50%{background-position:100% 0}}
+.van{width:calc(16px*var(--px));height:calc(28px*var(--px));background-image:url(assets/sprites/van.png);transform:rotate(90deg)}
+.zombie{width:calc(16px*var(--px));height:calc(16px*var(--px));background-image:url(assets/sprites/zombie.png)}
+.runner{width:calc(16px*var(--px));height:calc(16px*var(--px));background-image:url(assets/sprites/runner.png)}
+.spitter{width:calc(16px*var(--px));height:calc(16px*var(--px));background-image:url(assets/sprites/spitter.png)}
+.bomber{width:calc(16px*var(--px));height:calc(16px*var(--px));background-image:url(assets/sprites/bomber.png)}
+.brute{width:calc(24px*var(--px));height:calc(24px*var(--px));background-image:url(assets/sprites/brute.png)}
+.boss{width:calc(32px*var(--px));height:calc(32px*var(--px));background-image:url(assets/sprites/boss.png)}
+.wave,.chinelo,.egg,.gas,.repair,.gem,.spit{width:calc(10px*var(--px)*1.5);height:calc(10px*var(--px)*1.5)}
+.wave{background-image:url(assets/sprites/wave.png)}.chinelo{background-image:url(assets/sprites/chinelo.png)}
+.egg{background-image:url(assets/sprites/egg.png)}.gas{background-image:url(assets/sprites/gas.png)}
+.repair{background-image:url(assets/sprites/repair.png)}.gem{background-image:url(assets/sprites/gem.png)}
+.parade{display:flex;justify-content:center;align-items:flex-end;gap:1.1rem;margin-top:2.4rem;flex-wrap:wrap;--px:4}
+.parade .van{margin:0 1.2rem}
+.items{display:flex;gap:1.4rem;margin-top:1.4rem;flex-wrap:wrap;align-items:center}
+
+.block{max-width:1000px;margin:0 auto;padding:3rem 1.2rem 1rem}
+h2{font:2.2rem "VT323",monospace;color:var(--g);margin:0 0 1rem;letter-spacing:.06em}
+h2 span{color:var(--gd);margin-right:.6rem}
+h3{margin:.2rem 0 .4rem;font-size:1.05rem;color:#eafff1}
+.features,.enemies,.downloads{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+.features article,.enemies article,.card{background:var(--panel);border:1px solid var(--line);padding:1rem 1.1rem}
+.features p,.enemies p,.card p{margin:0;color:var(--dim);font-size:.92rem}
+.enemies article{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;--px:4}
+.enemies .spr{margin-bottom:.3rem}
+.controls{margin-top:1.2rem}
+
+.rarities{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
+.r{padding:.5rem .9rem;border:2px solid;background:var(--panel);font-weight:600}
+.r b{opacity:.85;margin-left:.4rem}
+.r0{color:#ccd1cc;border-color:#ccd1cc}.r1{color:#59e666;border-color:#59e666}
+.r2{color:#4d99ff;border-color:#4d99ff}.r3{color:#bf66ff;border-color:#bf66ff;box-shadow:0 0 10px rgba(191,102,255,.4)}
+.r4{color:#ffb826;border-color:#ffb826;box-shadow:0 0 14px rgba(255,184,38,.5)}
+
+.card{position:relative;display:flex;flex-direction:column;gap:.6rem;align-items:flex-start}
+.card.rec{border-color:var(--gd)}
+.badge{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);border:1px solid var(--line);padding:.1rem .5rem}
+.rec .badge{color:var(--g);border-color:var(--gd)}
+
+.changelog details{background:var(--panel);border:1px solid var(--line);margin-bottom:.7rem}
+.changelog summary{cursor:pointer;padding:.8rem 1rem;font-weight:600;list-style:none;display:flex;gap:.8rem;flex-wrap:wrap;align-items:baseline}
+.changelog summary::-webkit-details-marker{display:none}
+.changelog summary .v{font:1.5rem "VT323",monospace;color:var(--g)}
+.changelog summary .d{color:var(--dim);font-weight:400;font-size:.85rem;margin-left:auto}
+.changelog ul{margin:0;padding:0 1.2rem 1rem 2.2rem;color:var(--tx);font-size:.92rem}
+.changelog li{margin:.25rem 0}
+.changelog .new{background:var(--g);color:#031008;font-size:.7rem;padding:0 .4rem;font-weight:600}
+
+.foot{text-align:center;padding:3rem 1rem 4rem;color:var(--dim);border-top:1px solid var(--line);margin-top:3rem}
+@media (max-width:600px){.nav{padding:.6rem .8rem}.parade{--px:3}.enemies article{--px:3}}

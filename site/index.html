@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dead Frequency: Horda — a van contra a horda</title>
+<meta name="description" content="Dead Frequency: Horda é um jogo 2D de sobrevivência em pixel art: dirija a van, atropele a horda, escolha upgrades raros e derrube o Zumbão da 96.6. Grátis e de código aberto.">
+<meta property="og:title" content="Dead Frequency: Horda">
+<meta property="og:description" content="A van contra a horda, ao som da rádio 96.6. Sobreviva 15 minutos e derrube o chefe. Grátis, em pixel art.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#050806">
+<link rel="icon" href="assets/icon.png">
+<link rel="canonical" href="https://www.teuzin.com.br/df-horda/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="#topo"><span class="dot"></span>DEAD FREQUENCY <small>HORDA</small></a>
+  <nav>
+    <a href="#jogo">Jogo</a>
+    <a href="#inimigos">Inimigos</a>
+    <a href="#upgrades">Upgrades</a>
+    <a href="#baixar">Baixar</a>
+    <a href="#historico">Histórico</a>
+  </nav>
+</header>
+
+<main id="topo">
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="tag">▸ sintonizando 96.6 FM… <span id="hero-version">v—</span></p>
+      <h1>DEAD FREQUENCY<br><span>H O R D A</span></h1>
+      <p class="lead">A van contra a horda, ao som da rádio 96.6. Dirija sem parar, atropele zumbis,
+        junte sinais, escolha anúncios de upgrade e derrube o <b>Zumbão da 96.6</b> aos 15 minutos.
+        Pixel art, partidas curtas e nada de ficar parado.</p>
+      <div class="cta">
+        <a class="btn primary" id="hero-download" href="https://github.com/dieguesmosken/df-horda/releases/latest">⬇ Baixar o jogo</a>
+        <a class="btn" href="https://github.com/dieguesmosken/df-horda">Código no GitHub</a>
+      </div>
+      <p class="small dim">Grátis · Windows e Linux · código aberto (GPL-3.0)</p>
+      <div class="parade" aria-hidden="true">
+        <span class="spr van"></span>
+        <span class="spr walk zombie"></span><span class="spr walk runner"></span><span class="spr walk spitter"></span>
+        <span class="spr walk brute"></span><span class="spr walk bomber"></span><span class="spr walk boss"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="jogo" class="block">
+    <h2><span>01</span> O jogo</h2>
+    <div class="features">
+      <article><h3>Parou, morreu</h3><p>Cada inimigo encostado morde junto. Em movimento a van atropela os fracos e a horda não alcança.</p></article>
+      <article><h3>Van com inércia</h3><p>Dirija de cima, com aceleração, derrapagem e ré. Bater em pesados segura a van.</p></article>
+      <article><h3>4 dificuldades</h3><p>Fácil, Normal, Difícil e Pesadelo: mudam vida, dano, velocidade e quantidade de inimigos.</p></article>
+      <article><h3>Sempre tem escolha</h3><p>15 upgrades com raridade e anúncios sem fim: o nível nunca fica sem opção.</p></article>
+      <article><h3>Chefe aos 15:00</h3><p>Hordas surpresa, elites com hora marcada e o Zumbão da 96.6, que chama reforço.</p></article>
+      <article><h3>Seu volume, seu jeito</h3><p>Volume separado de música, efeitos, inimigos e interface. Salve a partida e continue depois.</p></article>
+    </div>
+    <p class="small dim controls">Controles: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ou setas · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> escolhe upgrade · <kbd>Esc</kbd> pausa · controle também funciona.</p>
+  </section>
+
+  <section id="inimigos" class="block">
+    <h2><span>02</span> Inimigos</h2>
+    <div class="enemies">
+      <article><span class="spr walk zombie"></span><h3>Zumbi</h3><p>O básico. Devagar, mas aos montes.</p></article>
+      <article><span class="spr walk runner"></span><h3>Corredor</h3><p>Rápido e frágil. Aparece cedo.</p></article>
+      <article><span class="spr walk spitter"></span><h3>Cuspidor</h3><p>Fica longe e cospe. Mantenha a van em movimento.</p></article>
+      <article><span class="spr walk brute"></span><h3>Brutamontes</h3><p>Pesado e resistente. Atropelar segura a van.</p></article>
+      <article><span class="spr walk bomber"></span><h3>Bomba Ambulante</h3><p>Acende o pavio perto de você e explode.</p></article>
+      <article><span class="spr walk boss"></span><h3>Zumbão da 96.6</h3><p>O chefe final. Chama reforço a cada poucos segundos.</p></article>
+    </div>
+  </section>
+
+  <section id="upgrades" class="block">
+    <h2><span>03</span> Upgrades e raridades</h2>
+    <p class="dim">5 armas (Antena 96.6, Carro de Som, Chinelada, Carro do Ovo, Escapamento Tóxico) e 10 passivos. A raridade multiplica o efeito:</p>
+    <div class="rarities">
+      <span class="r r0">Comum <b>x1</b></span>
+      <span class="r r1">Incomum <b>x1,25</b></span>
+      <span class="r r2">Raro <b>x1,6</b></span>
+      <span class="r r3">Épico <b>x2,2</b></span>
+      <span class="r r4">Lendário <b>x3,2</b></span>
+    </div>
+    <div class="items" aria-hidden="true">
+      <span class="spr wave"></span><span class="spr chinelo"></span><span class="spr egg"></span><span class="spr gas"></span><span class="spr repair"></span><span class="spr gem"></span>
+    </div>
+  </section>
+
+  <section id="baixar" class="block">
+    <h2><span>04</span> Baixar</h2>
+    <p class="dim">Versão atual: <b id="dl-version">—</b> <span id="dl-date" class="small"></span></p>
+    <div class="downloads">
+      <article class="card rec">
+        <span class="badge">Windows</span>
+        <h3>DeadFrequencyHorda-windows.zip</h3>
+        <p>Extraia e abra <code>DeadFrequencyHorda.exe</code>.</p>
+        <a class="btn primary" id="dl-win" href="https://github.com/dieguesmosken/df-horda/releases/latest">⬇ Baixar</a>
+      </article>
+      <article class="card">
+        <span class="badge">Linux</span>
+        <h3>DeadFrequencyHorda-linux.zip</h3>
+        <p>Extraia e rode <code>./DeadFrequencyHorda.x86_64</code>.</p>
+        <a class="btn" id="dl-linux" href="https://github.com/dieguesmosken/df-horda/releases/latest">⬇ Baixar</a>
+      </article>
+      <article class="card">
+        <span class="badge">Código</span>
+        <h3>Abrir no Godot</h3>
+        <p>Godot 4.7.2 .NET. Clone o repositório e abra o <code>project.godot</code>.</p>
+        <a class="btn" href="https://github.com/dieguesmosken/df-horda">GitHub</a>
+      </article>
+    </div>
+    <p class="small dim">O Windows pode avisar sobre app desconhecido (o jogo não é assinado). Confira o SHA-256 no <a id="dl-sums" href="https://github.com/dieguesmosken/df-horda/releases/latest">SHA256SUMS.txt</a> do release.</p>
+  </section>
+
+  <section id="historico" class="block">
+    <h2><span>05</span> Histórico de versões</h2>
+    <div id="changelog" class="changelog"><p class="dim">Carregando…</p></div>
+    <p class="small dim">O mesmo histórico está no <a href="https://github.com/dieguesmosken/df-horda/blob/main/CHANGELOG.md">CHANGELOG.md</a> do repositório.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Dead Frequency: Horda · por <b>teuzin0dev</b> · código sob <a href="https://github.com/dieguesmosken/df-horda/blob/main/LICENSE">GPL-3.0</a> · sons CC0</p>
+  <p class="small dim">Spin-off de <a href="https://www.teuzin.com.br/dead-frequency/">Dead Frequency</a>.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

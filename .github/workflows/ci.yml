@@ -1,0 +1,54 @@
+# Verificação e build a cada push e pull request: confere versão/changelog, compila o C#
+# e exporta o jogo para Windows e Linux (os arquivos ficam em "Artifacts" da execução, por 14 dias).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Verificar e compilar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versão e changelog conferem
+        run: python3 Tools/changelog.py check
+
+      - name: Site gera sem erro
+        run: python3 site/build.py
+
+      - uses: ./.github/actions/setup-godot
+
+      - name: Importar assets
+        run: |
+          "$GODOT" --headless --import --path . || true
+
+      - name: Compilar o C#
+        run: dotnet build DeadFrequencyHorda.csproj -c Release
+
+      - name: Exportar Windows e Linux
+        run: |
+          set -e
+          mkdir -p build/windows build/linux
+          dotnet build DeadFrequencyHorda.csproj -c ExportRelease
+          "$GODOT" --headless --path . --export-release "Windows Desktop" build/windows/DeadFrequencyHorda.exe
+          "$GODOT" --headless --path . --export-release "Linux" build/linux/DeadFrequencyHorda.x86_64
+          ls -la build/windows build/linux
+
+      - name: Guardar os builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: DeadFrequencyHorda-${{ github.sha }}
+          path: build/
+          retention-days: 14
