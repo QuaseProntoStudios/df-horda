@@ -1,5 +1,5 @@
 // Preenche o site com os dados gerados (site/data/site.json) e os links do último release.
-const REPO = "dieguesmosken/df-horda";
+const REPO = "QuaseProntoStudios/df-horda";
 
 function el(tag, attrs = {}, text = "") {
   const node = document.createElement(tag);

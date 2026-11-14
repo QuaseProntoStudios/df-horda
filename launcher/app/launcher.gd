@@ -4,8 +4,8 @@
 # Configurações em user://launcher.cfg; a versão instalada do jogo fica em <pasta>/version.txt.
 extends Control
 
-const LAUNCHER_VERSION := "1.0.2"
-const REPO := "dieguesmosken/df-horda"
+const LAUNCHER_VERSION := "1.0.3"
+const REPO := "QuaseProntoStudios/df-horda"
 const API := "https://api.github.com/repos/%s/releases?per_page=30" % REPO
 const RELEASES := "https://github.com/%s/releases" % REPO
 const CFG := "user://launcher.cfg"

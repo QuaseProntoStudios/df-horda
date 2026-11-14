@@ -54,7 +54,7 @@ def notes(version):
     version = version.lstrip("v")
     for r in parse():
         if r["version"] == version:
-            repo = "https://github.com/dieguesmosken/df-horda"
+            repo = "https://github.com/QuaseProntoStudios/df-horda"
             dl = f"{repo}/releases/download/v{version}/"
             print(f"## v{version} — {r['title']}\n*{r['date']}*\n")
             for c in r["changes"]:
