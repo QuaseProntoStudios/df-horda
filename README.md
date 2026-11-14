@@ -23,7 +23,7 @@ Baixe o `DeadFrequencyHordaLauncher` (Windows `.exe` ou Linux `.x86_64`) na [pá
 
 ## Fluxo de branches
 
-`beta` é onde tudo entra primeiro (cada push que muda o jogo publica um pré-lançamento `vX.Y.Z-beta.N`). A `main` é protegida: só recebe pull request vindo do `beta`, com o CI passando, e publica o release estável quando a versão em `Scripts/GameVersion.cs` muda.
+Trabalho novo sai em um branch próprio (ex.: `feat/cenario`) e abre pull request para o `beta`: o CI roda, o merge é automático (squash) quando passa, o branch é apagado e sai um pré-lançamento `vX.Y.Z-beta.N` para testar. O CodeRabbit só revisa pull requests para a `main`. A `main` é protegida: só recebe pull request vindo do `beta`, com o CI passando e aprovação manual, e publica o release estável quando a versão em `Scripts/GameVersion.cs` muda.
 
 ## Menus e configurações
 

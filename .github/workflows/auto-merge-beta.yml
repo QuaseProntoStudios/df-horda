@@ -1,0 +1,26 @@
+# Liga o merge automático em todo pull request que aponta para o branch beta.
+# Assim que a verificação "Verificar e compilar" passar, o GitHub mescla sozinho (squash) e apaga o branch.
+# Pull requests para a main NÃO entram aqui: esses a gente aprova na mão.
+name: Auto-merge na beta
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+    branches: [beta]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Ligar merge automático
+    # Só PR do próprio repositório (nunca de fork).
+    if: github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ligar auto-merge (squash)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash --delete-branch "$PR_URL"
