@@ -14,6 +14,8 @@ public sealed class DifficultyDef
     /// <summary>Chance de cair kit de reparo (1 = padrão).</summary>
     public float RepairDrop = 1f;
     public float XpGain = 1f;
+    /// <summary>Multiplica as fichas ganhas ao fim da partida.</summary>
+    public float Reward = 1f;
 }
 
 public static class Difficulties
@@ -24,7 +26,7 @@ public static class Difficulties
         {
             Name = "FÁCIL",
             Description = "Para aprender a dirigir: inimigos fracos e mais reparos.",
-            EnemyHp = 0.75f, EnemyDamage = 0.6f, EnemySpeed = 0.93f, SpawnRate = 0.75f, RepairDrop = 2f, XpGain = 1.15f,
+            EnemyHp = 0.75f, EnemyDamage = 0.6f, EnemySpeed = 0.93f, SpawnRate = 0.75f, RepairDrop = 2f, XpGain = 1.15f, Reward = 0.6f,
         },
         new DifficultyDef
         {
@@ -35,13 +37,13 @@ public static class Difficulties
         {
             Name = "DIFÍCIL",
             Description = "Horda maior, mais forte e menos reparos.",
-            EnemyHp = 1.4f, EnemyDamage = 1.4f, EnemySpeed = 1.06f, SpawnRate = 1.3f, RepairDrop = 0.7f,
+            EnemyHp = 1.4f, EnemyDamage = 1.4f, EnemySpeed = 1.06f, SpawnRate = 1.3f, RepairDrop = 0.7f, Reward = 1.4f,
         },
         new DifficultyDef
         {
             Name = "PESADELO",
             Description = "Quase sem folga. Só para quem domina a van.",
-            EnemyHp = 1.9f, EnemyDamage = 2f, EnemySpeed = 1.12f, SpawnRate = 1.7f, RepairDrop = 0.4f,
+            EnemyHp = 1.9f, EnemyDamage = 2f, EnemySpeed = 1.12f, SpawnRate = 1.7f, RepairDrop = 0.4f, Reward = 1.9f,
         },
     };
 

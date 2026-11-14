@@ -19,9 +19,11 @@ Atropelar em velocidade machuca os inimigos e protege a van dos fracos. **Parado
 
 ## Menus e configurações
 
-- Menu inicial: **Jogar** (escolhe a dificuldade), **Continuar** (retoma a partida salva), **Configurações**, **Sair**.
+- Menu inicial: **Jogar** (escolhe a dificuldade), **Continuar** (retoma a partida salva), **Oficina** (upgrades permanentes com fichas), **Conquistas**, **Configurações**, **Sair**.
 - Pausa: Continuar, Configurações, **Salvar e sair**, Sair sem salvar.
 - Configurações: volume **geral, música, efeitos, inimigos e interface** (com som de teste), tremor de tela e tela cheia. Ficam salvas em `user://settings.cfg`.
+- Conquistas (29) com aviso na tela, salvas em `user://achievements.cfg`; fichas e Oficina em `user://meta.cfg`.
+- Fonte: Pixelify Sans (OFL), em `Fonts/`.
 - Dificuldades: **Fácil, Normal, Difícil, Pesadelo** (vida, dano, velocidade, quantidade de inimigos, reparos e XP).
 
 ## Upgrades e raridades

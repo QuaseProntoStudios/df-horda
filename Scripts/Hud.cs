@@ -47,7 +47,7 @@ public partial class Hud : CanvasLayer
         _hpFlash = new ColorRect { Color = new Color(1f, 1f, 1f, 0f), Position = new Vector2(4f, 18f), Size = new Vector2(HpBarWidth + 2f, 6f) };
         AddChild(_hpFlash);
         _hpLabel = UiStyle.MakeLabel("100", UiStyle.Red);
-        _hpLabel.Position = new Vector2(HpBarWidth + 10f, 14f);
+        _hpLabel.Position = new Vector2(HpBarWidth + 10f, 13f);
         AddChild(_hpLabel);
 
         _timeLabel = UiStyle.MakeLabel("00:00", UiStyle.Green);
@@ -64,7 +64,7 @@ public partial class Hud : CanvasLayer
 
         // Aviso rápido no alto da tela (hordas, elite, kit de reparo...).
         _toast = UiStyle.MakeLabel("", Colors.White);
-        _toast.Position = new Vector2(0f, 30f);
+        _toast.Position = new Vector2(0f, 32f);
         _toast.Size = new Vector2(ScreenWidth, 12f);
         _toast.HorizontalAlignment = HorizontalAlignment.Center;
         _toast.Visible = false;
@@ -92,17 +92,16 @@ public partial class Hud : CanvasLayer
         };
         AddChild(_bannerDim);
 
-        _bannerTitle = UiStyle.MakeLabel("", UiStyle.Green);
-        _bannerTitle.AddThemeFontSizeOverride("font_size", 16);
-        _bannerTitle.Position = new Vector2(0f, 56f);
-        _bannerTitle.Size = new Vector2(ScreenWidth, 24f);
+        _bannerTitle = UiStyle.MakeTitle("", UiStyle.Green, 20);
+        _bannerTitle.Position = new Vector2(0f, 50f);
+        _bannerTitle.Size = new Vector2(ScreenWidth, 26f);
         _bannerTitle.HorizontalAlignment = HorizontalAlignment.Center;
         _bannerTitle.Visible = false;
         AddChild(_bannerTitle);
 
         _bannerSub = UiStyle.MakeLabel("", UiStyle.Green);
-        _bannerSub.Position = new Vector2(0f, 86f);
-        _bannerSub.Size = new Vector2(ScreenWidth, 50f);
+        _bannerSub.Position = new Vector2(0f, 82f);
+        _bannerSub.Size = new Vector2(ScreenWidth, 60f);
         _bannerSub.HorizontalAlignment = HorizontalAlignment.Center;
         _bannerSub.Visible = false;
         AddChild(_bannerSub);

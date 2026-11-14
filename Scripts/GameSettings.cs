@@ -15,12 +15,14 @@ public static class GameSettings
     public const string BusSfx = "SFX";
     public const string BusEnemy = "Enemy";
     public const string BusUi = "UI";
+    public const string BusEngine = "Engine";
 
     public static float Master = 0.8f;
     public static float Music = 0.35f;
     public static float Sfx = 0.7f;
     public static float Enemy = 0.5f;
     public static float Ui = 0.7f;
+    public static float Engine = 0.9f;
     public static bool Shake = true;
     public static bool Fullscreen;
     public static int Difficulty = 1;
@@ -33,11 +35,14 @@ public static class GameSettings
         if (_initialized) return;
         _initialized = true;
 
+        Fonts.Init();
+
         Load();
         EnsureBus(BusMusic);
         EnsureBus(BusSfx);
         EnsureBus(BusEnemy);
         EnsureBus(BusUi);
+        EnsureBus(BusEngine);
         ApplyAudio();
         if (Fullscreen) ApplyWindow();
         Session.Difficulty = Difficulty;
@@ -53,6 +58,7 @@ public static class GameSettings
         Sfx = Volume(cfg, "sfx", Sfx);
         Enemy = Volume(cfg, "enemy", Enemy);
         Ui = Volume(cfg, "ui", Ui);
+        Engine = Volume(cfg, "engine", Engine);
         Shake = cfg.GetValue("game", "shake", Shake).AsBool();
         Fullscreen = cfg.GetValue("game", "fullscreen", Fullscreen).AsBool();
         Difficulty = Mathf.Clamp(cfg.GetValue("game", "difficulty", Difficulty).AsInt32(), 0, Difficulties.All.Length - 1);
@@ -66,6 +72,7 @@ public static class GameSettings
         cfg.SetValue("audio", "sfx", Sfx);
         cfg.SetValue("audio", "enemy", Enemy);
         cfg.SetValue("audio", "ui", Ui);
+        cfg.SetValue("audio", "engine", Engine);
         cfg.SetValue("game", "shake", Shake);
         cfg.SetValue("game", "fullscreen", Fullscreen);
         cfg.SetValue("game", "difficulty", Difficulty);
@@ -79,6 +86,7 @@ public static class GameSettings
         SetBus(BusSfx, Sfx);
         SetBus(BusEnemy, Enemy);
         SetBus(BusUi, Ui);
+        SetBus(BusEngine, Engine);
     }
 
     public static void ApplyWindow()

@@ -14,14 +14,16 @@ public static class SettingsPages
         }
 
         var page = new MenuPanel.Page { Id = "settings", OnBack = GoBack, DimAlpha = dimAlpha };
-        page.Title.Add(("CONFIGURAÇÕES", 16, UiStyle.Green));
+        page.Title.Add(("CONFIGURAÇÕES", 12, UiStyle.Green));
 
         page.Items.Add(Slider("Volume geral", () => GameSettings.Master, v => GameSettings.Master = v,
             GameSettings.BusMaster, "UI/ui_click.wav", "Controla todos os sons de uma vez."));
         page.Items.Add(Slider("Música", () => GameSettings.Music, v => GameSettings.Music = v,
             null, null, "A rádio 96.6 e a música do menu."));
+        page.Items.Add(Slider("Motor da van", () => GameSettings.Engine, v => GameSettings.Engine = v,
+            GameSettings.BusEngine, "SFX/bus_horn.wav", "O som do motor e da direção."));
         page.Items.Add(Slider("Efeitos", () => GameSettings.Sfx, v => GameSettings.Sfx = v,
-            GameSettings.BusSfx, "SFX/delivery_ok.wav", "Motor, armas, sinais e subida de nível."));
+            GameSettings.BusSfx, "SFX/delivery_ok.wav", "Armas, sinais e subida de nível."));
         page.Items.Add(Slider("Inimigos", () => GameSettings.Enemy, v => GameSettings.Enemy = v,
             GameSettings.BusEnemy, "SFX/impact_box.wav", "Batidas, cuspes, explosões e dano na van."));
         page.Items.Add(Slider("Interface", () => GameSettings.Ui, v => GameSettings.Ui = v,

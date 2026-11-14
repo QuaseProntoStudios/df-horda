@@ -12,7 +12,7 @@ public partial class UpgradeScreen : CanvasLayer
 {
     private const int Slots = 3;
     private const float SlotW = 98f;
-    private const float SlotH = 118f;
+    private const float SlotH = 126f;
     private const float SlotGap = 7f;
 
     public event Action<Offer> Chosen;
@@ -38,7 +38,7 @@ public partial class UpgradeScreen : CanvasLayer
         _root.AddChild(new ColorRect { Color = new Color(0f, 0f, 0f, 0.75f), Position = Vector2.Zero, Size = new Vector2(320f, 180f) });
 
         Label title = UiStyle.MakeLabel("RÁDIO 96.6 INFORMA: ESCOLHA UM ANÚNCIO", UiStyle.Green);
-        title.Position = new Vector2(0f, 12f);
+        title.Position = new Vector2(0f, 10f);
         title.Size = new Vector2(320f, 12f);
         title.HorizontalAlignment = HorizontalAlignment.Center;
         _root.AddChild(title);
@@ -49,7 +49,7 @@ public partial class UpgradeScreen : CanvasLayer
             int slot = i;
             var panel = new Panel
             {
-                Position = new Vector2(startX + i * (SlotW + SlotGap), 30f),
+                Position = new Vector2(startX + i * (SlotW + SlotGap), 26f),
                 Size = new Vector2(SlotW, SlotH),
                 MouseFilter = Control.MouseFilterEnum.Stop,
             };
@@ -62,23 +62,24 @@ public partial class UpgradeScreen : CanvasLayer
             _root.AddChild(panel);
             _panels[i] = panel;
 
-            _rarityLabels[i] = AddLabel(panel, new Vector2(0f, 4f), SlotW, HorizontalAlignment.Center);
-            _nameLabels[i] = AddLabel(panel, new Vector2(4f, 18f), SlotW - 8f, HorizontalAlignment.Center);
+            _rarityLabels[i] = AddLabel(panel, new Vector2(0f, 3f), SlotW, HorizontalAlignment.Center);
+            _nameLabels[i] = AddLabel(panel, new Vector2(4f, 16f), SlotW - 8f, HorizontalAlignment.Center);
+            _nameLabels[i].AddThemeFontOverride("font", Fonts.Bold);
             _nameLabels[i].AutowrapMode = TextServer.AutowrapMode.WordSmart;
             _tagLabels[i] = AddLabel(panel, new Vector2(0f, 42f), SlotW, HorizontalAlignment.Center);
-            _textLabels[i] = AddLabel(panel, new Vector2(5f, 58f), SlotW - 10f, HorizontalAlignment.Left);
+            _textLabels[i] = AddLabel(panel, new Vector2(5f, 56f), SlotW - 10f, HorizontalAlignment.Left);
             _textLabels[i].AutowrapMode = TextServer.AutowrapMode.WordSmart;
-            _textLabels[i].Size = new Vector2(SlotW - 10f, SlotH - 62f);
+            _textLabels[i].Size = new Vector2(SlotW - 10f, SlotH - 68f);
 
             var key = UiStyle.MakeLabel($"[{i + 1}]", UiStyle.Hint);
-            key.Position = new Vector2(0f, SlotH - 11f);
+            key.Position = new Vector2(0f, SlotH - 13f);
             key.Size = new Vector2(SlotW, 10f);
             key.HorizontalAlignment = HorizontalAlignment.Center;
             panel.AddChild(key);
         }
 
         Label hint = UiStyle.MakeLabel("1 2 3, setas + Enter ou clique", UiStyle.GreenDim);
-        hint.Position = new Vector2(0f, 154f);
+        hint.Position = new Vector2(0f, 156f);
         hint.Size = new Vector2(320f, 12f);
         hint.HorizontalAlignment = HorizontalAlignment.Center;
         _root.AddChild(hint);

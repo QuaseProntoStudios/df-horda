@@ -4,6 +4,14 @@ Histórico de todas as versões do Dead Frequency: Horda. O site mostra a mesma 
 
 Para lançar uma versão nova: mude `Current` em `Scripts/GameVersion.cs`, escreva a entrada no topo deste arquivo (`## vX.Y.Z — Título  (DD/MM/AAAA)`) e dê push na `main`.
 
+## v0.3.0 — Oficina da 96.6  (14/11/2026)
+
+- Fonte pixel art nova (Pixelify Sans, licença OFL) em todo o jogo, com contorno nos textos e painel escuro atrás dos menus para ler melhor.
+- Controle novo "Motor da van" nas configurações, e o motor agora fica mais alto que a música por padrão.
+- 29 conquistas com aviso na tela ao desbloquear e aba **Conquistas** no menu. Algumas são secretas.
+- **Fichas da 96.6**: ganhas ao fim de cada partida (e com conquistas), gastas na **Oficina** do menu em 9 upgrades permanentes: vida, velocidade, dano, ímã, XP, sorte, kits de reparo, largada com níveis e Segunda Chance.
+- "Sair sem salvar" agora também paga as fichas da partida.
+
 ## v0.2.0 — Rádio Pirata  (14/11/2026)
 
 - Menu inicial com Jogar, Continuar, Configurações e Sair. Pausa com Salvar e sair e Sair sem salvar.

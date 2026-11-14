@@ -27,11 +27,11 @@ public partial class GameAudio : Node
 
     public override void _Ready()
     {
-        _radio = new AudioStreamPlayer { VolumeDb = -12f, Bus = GameSettings.BusMusic };
+        _radio = new AudioStreamPlayer { VolumeDb = -14f, Bus = GameSettings.BusMusic };
         AddChild(_radio);
         _radio.Finished += PlayNextTrack;
 
-        _engine = new AudioStreamPlayer { VolumeDb = -22f, Bus = GameSettings.BusSfx };
+        _engine = new AudioStreamPlayer { VolumeDb = -10f, Bus = GameSettings.BusEngine };
         AddChild(_engine);
         _engine.Stream = Assets.Stream("SFX/engine_loop.wav");
         _engine.Finished += RestartEngine;

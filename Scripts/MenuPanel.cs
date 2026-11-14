@@ -41,7 +41,7 @@ public partial class MenuPanel : Control
         public int StartIndex = -1;
     }
 
-    private const float RowH = 14f;
+    private const float RowH = 13f;
     private const float RowGap = 1f;
     private const float RowX = 36f;
     private const float RowW = 248f;
@@ -79,7 +79,8 @@ public partial class MenuPanel : Control
         Size = new Vector2(320f, 180f);
         MouseFilter = MouseFilterEnum.Stop;
         FocusMode = FocusModeEnum.None;
-        _font = ThemeDB.FallbackFont;
+        Fonts.Init();
+        _font = Fonts.Regular;
 
         _uiPlayer = new AudioStreamPlayer { Bus = GameSettings.BusUi };
         AddChild(_uiPlayer);
@@ -112,10 +113,16 @@ public partial class MenuPanel : Control
 
         DrawRect(new Rect2(Vector2.Zero, Size), new Color(0f, 0f, 0f, _page.DimAlpha));
 
-        float y = 12f;
+        // Painel escuro atrás de tudo: o texto não se perde no fundo do jogo.
+        float bottom = ItemsTop() + _page.Items.Count * (RowH + RowGap) + 6f;
+        var panel = new Rect2(RowX - 12f, 5f, RowW + 24f, bottom - 5f);
+        DrawRect(panel, new Color(0.01f, 0.04f, 0.02f, 0.94f));
+        DrawRect(panel, UiStyle.GreenDim, false, 1f);
+
+        float y = 11f;
         foreach ((string text, int size, Color color) in _page.Title)
         {
-            DrawCentered(text, y, size, color);
+            DrawCentered(text, y, size, color, bold: size > UiStyle.FontSize);
             y += size + 4f;
         }
 
@@ -126,7 +133,12 @@ public partial class MenuPanel : Control
         if (_sel >= 0 && _sel < _page.Items.Count)
         {
             string hint = _page.Items[_sel].Hint?.Invoke();
-            if (!string.IsNullOrEmpty(hint)) DrawCentered(hint, 166f, UiStyle.FontSize, UiStyle.Hint);
+            if (!string.IsNullOrEmpty(hint))
+            {
+                float width = _font.GetStringSize(hint, HorizontalAlignment.Left, -1f, UiStyle.FontSize).X + 12f;
+                DrawRect(new Rect2((Size.X - width) / 2f, 166f, width, 13f), new Color(0f, 0f, 0f, 0.85f));
+                DrawCentered(hint, 167f, UiStyle.FontSize, UiStyle.Hint);
+            }
         }
     }
 
@@ -150,7 +162,7 @@ public partial class MenuPanel : Control
         }
 
         float textY = top + (RowH - _font.GetHeight(UiStyle.FontSize)) / 2f + _font.GetAscent(UiStyle.FontSize);
-        DrawString(_font, new Vector2(RowX + 8f, textY), item.Display, HorizontalAlignment.Left, -1f, UiStyle.FontSize, color);
+        Text(new Vector2(RowX + 8f, textY), item.Display, HorizontalAlignment.Left, -1f, UiStyle.FontSize, color);
 
         float value = item.Get != null ? item.Get() : 0f;
         if (item.Kind == Kind.Slider)
@@ -159,27 +171,37 @@ public partial class MenuPanel : Control
             DrawRect(new Rect2(BarX, barY, BarW, 4f), UiStyle.Dark);
             DrawRect(new Rect2(BarX, barY, BarW, 4f), UiStyle.GreenDim, false, 1f);
             DrawRect(new Rect2(BarX, barY, BarW * Mathf.Clamp(value, 0f, 1f), 4f), selected ? Colors.White : UiStyle.Green);
-            DrawString(_font, new Vector2(RowX + RowW - 30f, textY), $"{Mathf.RoundToInt(value * 100f)}%",
-                HorizontalAlignment.Right, 24f, UiStyle.FontSize, color);
+            Text(new Vector2(RowX + RowW - 34f, textY), $"{Mathf.RoundToInt(value * 100f)}%",
+                HorizontalAlignment.Right, 28f, UiStyle.FontSize, color);
         }
         else
         {
-            DrawString(_font, new Vector2(RowX + RowW - 90f, textY), value > 0.5f ? "LIGADO" : "DESLIGADO",
-                HorizontalAlignment.Right, 82f, UiStyle.FontSize, value > 0.5f ? color : UiStyle.Disabled);
+            Text(new Vector2(RowX + RowW - 94f, textY), value > 0.5f ? "LIGADO" : "DESLIGADO",
+                HorizontalAlignment.Right, 86f, UiStyle.FontSize, value > 0.5f ? color : UiStyle.Disabled);
         }
     }
 
-    private void DrawCentered(string text, float top, int size, Color color, float left = 0f, float width = -1f)
+    private void DrawCentered(string text, float top, int size, Color color, float left = 0f, float width = -1f, bool bold = false)
     {
         if (width < 0f) width = Size.X;
-        DrawString(_font, new Vector2(left, top + _font.GetAscent(size)), text, HorizontalAlignment.Center, width, size, color);
+        Font font = bold ? Fonts.Bold : _font;
+        Text(new Vector2(left, top + font.GetAscent(size)), text, HorizontalAlignment.Center, width, size, color, font);
+    }
+
+    /// <summary>Texto com contorno preto: legível sobre qualquer fundo.</summary>
+    private void Text(Vector2 position, string text, HorizontalAlignment align, float width, int size, Color color, Font font = null)
+    {
+        font ??= _font;
+        position = new Vector2(Mathf.Round(position.X), Mathf.Round(position.Y));
+        DrawStringOutline(font, position, text, align, width, size, 3, Colors.Black);
+        DrawString(font, position, text, align, width, size, color);
     }
 
     private float ItemsTop()
     {
-        float y = 12f;
+        float y = 11f;
         foreach ((string _, int size, Color _) in _page.Title) y += size + 4f;
-        return y + 8f;
+        return y + 6f;
     }
 
     // ---------------------------------------------------------------- Teclado e controle

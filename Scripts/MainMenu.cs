@@ -25,6 +25,8 @@ public partial class MainMenu : Node2D
     private float _time;
     private MenuPanel _menu;
     private bool _starting;
+    private AchievementsScreen _achievements;
+    private WorkshopScreen _workshop;
 
     public override void _Ready()
     {
@@ -119,9 +121,9 @@ public partial class MainMenu : Node2D
         layer.AddChild(_menu);
 
         var main = new MenuPanel.Page { Id = "main", DimAlpha = 0.55f };
-        main.Title.Add(("DEAD FREQUENCY", 16, UiStyle.Green));
-        main.Title.Add(("H O R D A", 24, new Color(0.7f, 1f, 0.75f)));
-        main.Title.Add(("96.6 FM", 8, UiStyle.Hint));
+        main.Title.Add(("DEAD FREQUENCY", 14, UiStyle.Green));
+        main.Title.Add(("H O R D A", 20, new Color(0.7f, 1f, 0.75f)));
+        main.Title.Add(("96.6 FM", 10, UiStyle.Hint));
         main.Items.Add(MenuPanel.Button("Jogar", () => _menu.Open("difficulty"), "Começa uma partida nova."));
         main.Items.Add(new MenuPanel.Item
         {
@@ -129,6 +131,8 @@ public partial class MainMenu : Node2D
             Enabled = () => RunSave.Exists,
             Hint = () => RunSave.Exists ? RunSave.Summary() : "Nenhuma partida salva. Use \"Salvar e sair\" na pausa.",
         });
+        main.Items.Add(MenuPanel.Button("Oficina", OpenWorkshop, "Gaste fichas em upgrades permanentes."));
+        main.Items.Add(MenuPanel.Button("Conquistas", OpenAchievements, "Veja o que você já desbloqueou."));
         main.Items.Add(MenuPanel.Button("Configurações", () => _menu.Open("settings"), "Volumes, tremor de tela e tela cheia."));
         main.Items.Add(MenuPanel.Button("Sair", () => GetTree().Quit()));
         _menu.AddPage(main);
@@ -146,6 +150,14 @@ public partial class MainMenu : Node2D
 
         _menu.AddPage(SettingsPages.Build(_menu, "main", 0.78f));
 
+        _achievements = new AchievementsScreen();
+        _achievements.Closed += () => _menu.Visible = true;
+        layer.AddChild(_achievements);
+        _workshop = new WorkshopScreen();
+        _workshop.Closed += () => _menu.Visible = true;
+        layer.AddChild(_workshop);
+        AchievementToast.Create(this);
+
         var footer = UiStyle.MakeLabel($"v{GameVersion.Current}  -  GPL-3.0  -  teuzin0dev", UiStyle.GreenDim);
         footer.Position = new Vector2(4f, 168f);
         layer.AddChild(footer);
@@ -153,6 +165,18 @@ public partial class MainMenu : Node2D
         // Se existe partida salva, o cursor já cai em "Continuar".
         if (RunSave.Exists) main.StartIndex = 1;
         _menu.Open("main");
+    }
+
+    private void OpenAchievements()
+    {
+        _menu.Visible = false;
+        _achievements.Open();
+    }
+
+    private void OpenWorkshop()
+    {
+        _menu.Visible = false;
+        _workshop.Open();
     }
 
     private void StartRun(int difficulty, bool continueRun)

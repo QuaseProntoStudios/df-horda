@@ -125,6 +125,7 @@ public partial class Game : Node2D
     private Enemy _boss;
     private bool _bossSpawned;
     private bool _bossDead;
+    private bool _bossKilled;
 
     private float _time;
     private float _spawnTimer;
@@ -144,6 +145,16 @@ public partial class Game : Node2D
     private int _kills;
     private int _hordeIndex;
     private int _eliteIndex;
+
+    // Conquistas e meta-progressão.
+    private float _sinceHit;
+    private int _ramKills;
+    private int _bombKills;
+    private int _revivesLeft;
+    private int _pendingPicks;
+    private bool _ramKillFlag;
+    private bool _committed;
+    private int _lastReward;
 
     // Derivados dos upgrades (ApplyStats).
     private float _dmgMult = 1f;
@@ -207,10 +218,22 @@ public partial class Game : Node2D
         _upgradeScreen = new UpgradeScreen();
         AddChild(_upgradeScreen);
         _upgradeScreen.Chosen += OnUpgradeChosen;
+        AchievementToast.Create(this);
 
         BuildPauseMenu();
 
-        if (loaded != null) Restore(loaded);
+        if (loaded != null)
+        {
+            Restore(loaded);
+            Achievements.Unlock("retomada");
+        }
+        else
+        {
+            int head = Mathf.RoundToInt(MetaProgress.Value(MetaProgress.Arranque));
+            _level += head;
+            _pendingPicks = head;
+        }
+        _revivesLeft = Mathf.RoundToInt(MetaProgress.Value(MetaProgress.Revive));
 
         ApplyStats();
         if (loaded == null) _hp = _maxHp;
@@ -249,7 +272,16 @@ public partial class Game : Node2D
         if (_state != State.Playing) return;
         float dt = Mathf.Min((float)delta, 0.05f);
 
+        if (_pendingPicks > 0)
+        {
+            _pendingPicks--;
+            OpenOffers();
+            return;
+        }
+
         _time += dt;
+        _sinceHit += dt;
+        CheckTimeAchievements();
         UpdateScales();
         UpdateTimeline();
 
@@ -550,7 +582,9 @@ public partial class Game : Node2D
                     enemy.RamCooldown = 0.3f;
                     float damage = RamBaseDamage * _ramMult * (vanSpeed / 100f);
                     enemy.Knockback = _van.Velocity.Normalized() * (def.Heavy ? 50f : 130f) - direction * 50f;
+                    _ramKillFlag = true;
                     DamageEnemy(enemy, damage);
+                    _ramKillFlag = false;
                     _shake = Mathf.Max(_shake, def.Heavy ? 2.5f : 1.2f);
                     if (_ramSoundCooldown <= 0f)
                     {
@@ -659,13 +693,15 @@ public partial class Game : Node2D
         _kills++;
         Release(enemy);
         SpawnGem(enemy.Position, enemy.Def.Xp);
+        OnEnemyKilled(enemy);
 
         if (enemy.Def.Elite) DropRepair(enemy.Position);
-        else if (_random.NextDouble() < 0.007 * _diff.RepairDrop) DropRepair(enemy.Position);
+        else if (_random.NextDouble() < 0.007 * _diff.RepairDrop * (1f + MetaProgress.Value(MetaProgress.Mecanico))) DropRepair(enemy.Position);
 
         if (enemy.Def.Boss)
         {
             _bossDead = true;
+            _bossKilled = true;
             _shake = 5f;
             EndRun(State.Victory);
         }
@@ -680,6 +716,7 @@ public partial class Game : Node2D
     {
         damage *= _takenMult;
         _hp -= damage;
+        _sinceHit = 0f;
         _invulnerable = VanInvulnerability;
         _shake = Mathf.Max(_shake, Mathf.Min(2f + damage * 0.08f, 5f));
         _van.Flash();
@@ -690,7 +727,11 @@ public partial class Game : Node2D
             _audio.PlayEnemy("SFX/crash_light.wav", -5f);
         }
 
-        if (_hp <= 0f)
+        if (_hp <= 0f && _revivesLeft > 0)
+        {
+            Revive();
+        }
+        else if (_hp <= 0f)
         {
             _hp = 0f;
             EndRun(State.GameOver);
@@ -1048,6 +1089,7 @@ public partial class Game : Node2D
             pickup.Dead = true;
             float heal = _maxHp * RepairHeal;
             _hp = Mathf.Min(_hp + heal, _maxHp);
+            Achievements.Unlock("reparo");
             _hud.Toast("KIT DE REPARO!", UiStyle.Green, 1.5f);
             _audio.Play("SFX/buy.wav", -6f);
         }
@@ -1064,7 +1106,12 @@ public partial class Game : Node2D
     {
         _xp -= XpToNextLevel();
         _level++;
+        CheckLevelAchievements();
+        OpenOffers();
+    }
 
+    private void OpenOffers()
+    {
         List<Offer> offers = BuildOffers();
         _state = State.ChoosingUpgrade;
         _audio.SetEngineRunning(false);
@@ -1108,6 +1155,9 @@ public partial class Game : Node2D
 
         _levels[def.Id]++;
         _power[def.Id] += mult;
+        if (offer.Rarity == Rarity.Epico) Achievements.Unlock("epico");
+        if (offer.Rarity == Rarity.Lendario) Achievements.Unlock("lendario");
+        CheckWeaponAchievements();
 
         float oldMax = _maxHp;
         ApplyStats();
@@ -1142,22 +1192,22 @@ public partial class Game : Node2D
 
     private void ApplyStats()
     {
-        float motor = 1f + Amount(UpgradeCatalog.Motor);
+        float motor = 1f + Amount(UpgradeCatalog.Motor) + MetaProgress.Value(MetaProgress.Motor);
         _van.MaxSpeed = 105f * motor;
         _van.Acceleration = 170f * motor;
 
-        _maxHp = 100f + Amount(UpgradeCatalog.Lataria);
+        _maxHp = 100f + Amount(UpgradeCatalog.Lataria) + MetaProgress.Value(MetaProgress.Chassi);
         if (_hp > _maxHp) _hp = _maxHp;
 
         _ramMult = 1f + Amount(UpgradeCatalog.Parachoque);
         _ramResist = Mathf.Min(0.6f, 0.06f * _power[UpgradeCatalog.Parachoque]);
-        _magnet = BaseMagnet * (1f + Amount(UpgradeCatalog.Ima));
+        _magnet = BaseMagnet * (1f + Amount(UpgradeCatalog.Ima) + MetaProgress.Value(MetaProgress.Ima));
         _takenMult = 1f / (1f + Amount(UpgradeCatalog.Amortecedor));
         _regen = Amount(UpgradeCatalog.Alternador);
-        _dmgMult = 1f + Amount(UpgradeCatalog.Calibragem) + Amount(UpgradeCatalog.Sucata);
+        _dmgMult = 1f + Amount(UpgradeCatalog.Calibragem) + Amount(UpgradeCatalog.Sucata) + MetaProgress.Value(MetaProgress.Calibre);
         _rate = 1f + Amount(UpgradeCatalog.Velas);
-        _xpMult = (1f + Amount(UpgradeCatalog.Radio)) * _diff.XpGain;
-        _luck = 1f + Amount(UpgradeCatalog.Trevo);
+        _xpMult = (1f + Amount(UpgradeCatalog.Radio) + MetaProgress.Value(MetaProgress.Antena)) * _diff.XpGain;
+        _luck = 1f + Amount(UpgradeCatalog.Trevo) + MetaProgress.Value(MetaProgress.Sorte);
     }
 
     // ---------------------------------------------------------------- Pausa
@@ -1174,7 +1224,7 @@ public partial class Game : Node2D
         page.Items.Add(MenuPanel.Button("Continuar", ClosePause));
         page.Items.Add(MenuPanel.Button("Configurações", () => _pause.Open("settings")));
         page.Items.Add(MenuPanel.Button("Salvar e sair", SaveAndQuit, "Guarda a partida; \"Continuar\" no menu retoma daqui."));
-        page.Items.Add(MenuPanel.Button("Sair sem salvar", () => GetTree().ChangeSceneToFile(Session.MenuScene), "Volta ao menu sem guardar esta partida."));
+        page.Items.Add(MenuPanel.Button("Sair sem salvar", QuitUnsaved, "Volta ao menu e ainda ganha as fichas desta partida."));
         _pause.AddPage(page);
         _pause.AddPage(SettingsPages.Build(_pause, "pause", 0.85f));
         _pause.Close();
@@ -1281,6 +1331,97 @@ public partial class Game : Node2D
         }
     }
 
+    private void OnEnemyKilled(Enemy enemy)
+    {
+        Achievements.Unlock("atropelo");
+        if (_ramKillFlag && ++_ramKills >= 150) Achievements.Unlock("atropelador");
+        if (enemy.Def.Id == "bomba" && ++_bombKills >= 10) Achievements.Unlock("bombas");
+        if (enemy.Def.Id == "alfa") Achievements.Unlock("alfa");
+
+        if (_kills >= 100) Achievements.Unlock("centena");
+        if (_kills >= 500) Achievements.Unlock("quinhentos");
+        if (_kills >= 1000) Achievements.Unlock("mil");
+        if (_kills >= 3000) Achievements.Unlock("tres_mil");
+
+        if (!enemy.Def.Boss) return;
+        Achievements.Unlock("chefe");
+        if (_diffIndex >= 2) Achievements.Unlock("chefe_dificil");
+        if (_diffIndex >= 3) Achievements.Unlock("chefe_pesadelo");
+    }
+
+    private void CheckTimeAchievements()
+    {
+        if (_time >= 300f)
+        {
+            Achievements.Unlock("tempo5");
+            if (_diffIndex >= 3) Achievements.Unlock("pesadelo5");
+        }
+        if (_time >= 600f) Achievements.Unlock("tempo10");
+        if (_sinceHit >= 90f) Achievements.Unlock("intocavel");
+    }
+
+    private void CheckLevelAchievements()
+    {
+        if (_level >= 10) Achievements.Unlock("nivel10");
+        if (_level >= 25) Achievements.Unlock("nivel25");
+        if (_level >= 40) Achievements.Unlock("nivel40");
+    }
+
+    private void CheckWeaponAchievements()
+    {
+        int weapons = 0;
+        foreach (UpgradeDef def in UpgradeCatalog.All)
+        {
+            if (def.Kind != UpKind.Weapon) continue;
+            if (_levels[def.Id] > 0) weapons++;
+            if (_levels[def.Id] >= def.MaxLevel) Achievements.Unlock("arma_maxima");
+        }
+        if (weapons >= 5) Achievements.Unlock("arsenal");
+    }
+
+    private void Revive()
+    {
+        _revivesLeft--;
+        _hp = _maxHp * 0.4f;
+        _invulnerable = 2.5f;
+        _shake = 6f;
+        Achievements.Unlock("segunda_chance");
+
+        const float radius = 130f;
+        _world.AddChild(PulseFx.Create(_van.Position, radius, new Color(1f, 0.9f, 0.4f)));
+        foreach (Enemy enemy in _enemies)
+        {
+            if (enemy.Dead || enemy.Position.DistanceTo(_van.Position) > radius) continue;
+            enemy.Knockback = (enemy.Position - _van.Position).Normalized() * 320f;
+            DamageEnemy(enemy, enemy.Def.Boss ? 150f : 250f);
+        }
+
+        _audio.Play("SFX/delivery_ok.wav", -2f);
+        _hud.Toast("SEGUNDA CHANCE!", new Color(1f, 0.85f, 0.3f), 2.5f);
+        RefreshHud();
+    }
+
+    /// <summary>Fecha a partida: soma estatísticas, libera conquistas e paga as fichas (uma vez só).</summary>
+    private void CommitRun()
+    {
+        if (_committed) return;
+        _committed = true;
+
+        Achievements.Unlock("primeira_volta");
+        Achievements.AddStat("kills", _kills);
+        if (Achievements.Stat("kills") >= 10000) Achievements.Unlock("dedetizadora");
+        Achievements.Save();
+
+        _lastReward = MetaProgress.RunReward(_time, _kills, _level, _bossKilled, _diff);
+        MetaProgress.AddFichas(_lastReward);
+    }
+
+    private void QuitUnsaved()
+    {
+        CommitRun();
+        GetTree().ChangeSceneToFile(Session.MenuScene);
+    }
+
     private void EndRun(State result)
     {
         _state = result;
@@ -1289,9 +1430,10 @@ public partial class Game : Node2D
         RunSave.Delete();
         _hud.SetBoss(0f, false);
         RefreshHud();
+        CommitRun();
 
         int survived = (int)_time;
-        string summary = $"Nível {_level}  -  {_kills} abates  -  {survived / 60:00}:{survived % 60:00}  -  {_diff.Name}\nEnter: jogar de novo   Esc: menu";
+        string summary = $"Nível {_level}  -  {_kills} abates  -  {survived / 60:00}:{survived % 60:00}  -  {_diff.Name}\n+{_lastReward} fichas  (Oficina no menu)\nEnter: jogar de novo   Esc: menu";
         if (result == State.Victory)
         {
             _audio.Play("SFX/delivery_ok.wav", -4f);
