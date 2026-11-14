@@ -31,3 +31,7 @@ Atropelar em velocidade causa dano e não machuca a van. Parado ou devagar, a ho
 ## Estado
 
 v0.1: primeira versão jogável. Um tipo de inimigo, Antena 96.6, Carro de Som e quatro upgrades passivos.
+
+## Licença
+
+Código sob [GPL-3.0](LICENSE), como o Dead Frequency. Os sons em `Audio/` são CC0 (ver `Audio/LICENSE.txt`).
