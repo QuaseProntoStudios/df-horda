@@ -1,6 +1,6 @@
 # Dead Frequency: Horda
 
-Spin-off 2D em pixel art de [Dead Frequency](https://github.com/dieguesmosken/dead-frequency).
+Spin-off 2D em pixel art de [Dead Frequency](https://github.com/QuaseProntoStudios/dead-frequency).
 A van contra a horda, ao som da rádio 96.6: sobreviva 15 minutos, junte sinais, escolha os anúncios (upgrades) e derrube o **Zumbão da 96.6**.
 
 **Engine:** Godot 4.7.2 .NET (C# / .NET 10), renderizador Compatibility, tela base 320x180 com escala inteira.
@@ -19,7 +19,7 @@ Atropelar em velocidade machuca os inimigos e protege a van dos fracos. **Parado
 
 ## Launcher e canais
 
-Baixe o `DeadFrequencyHordaLauncher` (Windows `.exe` ou Linux `.x86_64`) na [página de releases](https://github.com/dieguesmosken/df-horda/releases). Ele instala o jogo, atualiza sozinho e atualiza a si mesmo. Na engrenagem dá para trocar a pasta, ligar/desligar as atualizações automáticas e escolher o canal: **Estável** (releases) ou **Beta** (builds do branch `beta`, com mais chance de bug). O código está em `launcher/app/` (GDScript, Godot padrão); ao mudar `launcher.gd`, suba `LAUNCHER_VERSION` no script e `config/version` no `project.godot`.
+Baixe o `DeadFrequencyHordaLauncher` (Windows `.exe` ou Linux `.x86_64`) na [página de releases](https://github.com/QuaseProntoStudios/df-horda/releases). Ele instala o jogo, atualiza sozinho e atualiza a si mesmo. Na engrenagem dá para trocar a pasta, ligar/desligar as atualizações automáticas e escolher o canal: **Estável** (releases) ou **Beta** (builds do branch `beta`, com mais chance de bug). O código está em `launcher/app/` (GDScript, Godot padrão); ao mudar `launcher.gd`, suba `LAUNCHER_VERSION` no script e `config/version` no `project.godot`.
 
 ## Fluxo de branches
 

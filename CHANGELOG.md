@@ -6,6 +6,7 @@ Para lançar uma versão nova: mude `Current` em `Scripts/GameVersion.cs`, escre
 
 ## v0.3.1 — Launcher  (14/11/2026)
 
+- O projeto agora mora na organização **Quase Pronto Studios** (`QuaseProntoStudios/df-horda`); launcher 1.0.3 aponta para o endereço novo, e o site ganhou o logo do estúdio.
 - Cenário novo e infinito: campo, floresta, terra arrasada e ferro-velho, com estradas, árvores, pedras, carcaças, barris e postes. Obstáculos bloqueiam a van (e os zumbis), e batidas fortes causam dano.
 - Menu: caixa de seleção menor e versão discreta no rodapé.
 - **Launcher** próprio (Windows e Linux): instala o jogo, atualiza sozinho e abre com um clique. Vem junto de cada release.
